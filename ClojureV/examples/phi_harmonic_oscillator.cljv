@@ -1,0 +1,8 @@
+(ns ClojureV.qurq)
+
+; --- Phi-Harmonic Oscillator (PHO) ---
+; Manifests a stable helical oscillation for RTFP particles.
+; Uses the Golden Ratio (1.618) to prevent destructive interference.
+
+(defn phi_harmonic_oscillator [clk rst_n in]
+  (qurq/phi-scale out in))

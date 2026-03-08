@@ -1,0 +1,9 @@
+(ns ClojureV.qurq)
+
+; --- Quaternary Memory Controller (QMC) ---
+; Manifests biological-style memory using Base-4 encoding.
+; Implements Torsional Pairing for hardware error correction.
+
+(defn quaternary_memory_controller [clk rst_n in]
+  (qurq/quat-map mid in)
+  (qurq/torsional-pair out mid))

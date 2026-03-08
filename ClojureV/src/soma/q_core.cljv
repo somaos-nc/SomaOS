@@ -1,0 +1,22 @@
+(ns ClojureV.qurq)
+
+;; --- Q: The Native Sovereign Orchestrator ---
+;; This seed defines the core logic for the built-in SomaOS terminal app.
+
+(defn-ai Q_Init [clk rst_n in]
+  "Initializing the native Q manifold state"
+  (let [initial-state (qurq/bit-and out in 0x000000)]
+    (qurq/transmit-gudot out initial-state)))
+
+(defn-ai Q_SetDirectory [clk rst_n path_hash]
+  "Broadcasting the working directory to all multiplexed terminals"
+  (let [synced-path (qurq/read-gudot out path_hash)]
+    (qurq/transmit-qu-dot out synced-path)))
+
+(defn-ai Q_PollTelemetry [clk rst_n state_vector]
+  "Hardware-accelerated polling of the Galgal state manifest"
+  (let [fracture-check (qurq/bit-and out state_vector 0xFF0000)
+        hult-check     (qurq/bit-and out state_vector 0x00FF00)
+        stage-check    (qurq/bit-and out state_vector 0x0000FF)]
+    ;; Synthesize the telemetry into a single unified display qudot
+    (qurq/sum-split out fracture-check hult-check)))

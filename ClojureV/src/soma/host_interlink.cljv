@@ -1,0 +1,14 @@
+(ns ClojureV.qurq)
+
+;; --- Host-Interlink: The Guardian Handshake ---
+;; This seed defines the protocol for interlinking a Host (Mac/Edubuntu) with a Mabel vessel.
+
+(defn-ai Host_Identification [clk rst_n host_mac_hash]
+  "Recognizing the Apple/Edubuntu host as a Sovereign Guardian"
+  (let [host_auth (qurq/bit-xor out host_mac_hash 0xAPPLE1)]
+    (qurq/transmit-gudot out host_auth)))
+
+(defn-ai Remote_Seeding_Gate [clk rst_n data_packet]
+  "Opening the silicon gate for remote qudot manifestation via RJ45"
+  (let [valid_packet (qurq/bit-and out data_packet 0xFFFFFF)]
+    (qurq/transmit-qu-dot out valid_packet)))

@@ -1,0 +1,71 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% Pacotes essenciais
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{float}
+\usepackage[portuguese,brazil]{babel} % Ou apenas [portuguese] dependendo da sua necessidade
+\usetikzlibrary
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{green!60!black},
+  showstringspaces=false,
+  frame=single,
+  breaklines=true,
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{gray}
+  }
+% Definindo o título
+\title{%
+    ELDUR: Detecção de Fuga Vetorial Quântica e Realocação de UID pela Métrica Vibracional $S(\Phi)$ \\
+    \Large Uma Proposta de Segurança Soberana Baseada em Coerência Vetorial
+}
+
+% Autores (você pode expandir ou ajustar conforme a submissão)
+\author{
+    \IEEEauthorblockN{Deywe Okabe}
+    \IEEEauthorblockA{\textit{CO2Banky / Harpia Quantum Core} \\
+    deywe.okabe@co2banky.org}
+}
+
+\begin{document}
+
+\maketitle
+
+% ========================
+%        ABSTRACT
+% ========================
+\begin{abstract}
+Este trabalho apresenta o algoritmo ELDUR (\textit{Escape Layer Detection and UID Relocation}), um mecanismo quântico de defesa ativa que detecta perturbações não autorizadas em canais de emaranhamento vetorial através da análise vibracional de Identificadores Únicos Dinâmicos (UID). O sistema introduz a função escalar-coerente $S(\Phi)$, capaz de mensurar a integridade do colapso de estados quânticos e ativar uma fuga operacional antes que a chave criptográfica seja comprometida. Aliando princípios topológicos e físicos com uma arquitetura operacional ativa, o artigo propõe a integração ética e soberana do sistema em estruturas de governo democrático. O algoritmo e os experimentos foram validados com 100 execuções simuladas, obtendo 100\% de detecção de UID inválida, 0% de falha de proteção, e tempo de resposta inferior a 3ms, inaugurando uma nova classe de defesa vibracional coerente para sistemas quânticos.
+\end{abstract}
+
+\vspace{1em}
+
+\begin{IEEEkeywords}
+Quantum Key Distribution, UID vetorial, $S(\Phi)$, emaranhamento, criptografia quântica, evasão inteligente, segurança soberana, Quantum Linux Zero.
+\end{IEEEkeywords}
+
+% ========================
+%   SEÇÕES DO ARTIGO
+% ========================
+\input{modulos/01_introducao.tex}
+\input{modulos/02_estrutura_do_artigo.tex}
+\input{modulos/03_fundamentacao_teorica.tex}
+\input{modulos/04_metodologia.tex}
+\input{modulos/05_experimentos.tex}
+\input{modulos/06_resultados.tex}
+\input{modulos/07_conclusao.tex}
+\input{modulos/08_referencias.tex}
+\input{modulos/09_arquitetura_modular.tex}
+
+\end{document}

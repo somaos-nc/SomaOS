@@ -1,0 +1,6 @@
+; --- ClojureV: Invisible Real Seeding ---
+; Manifests a camouflaged topological signal.
+; Uses refraction modulation.
+
+(defn invisible_real_seeding [clk rst_n in]
+  (bit-xor out in 0x55AA55))

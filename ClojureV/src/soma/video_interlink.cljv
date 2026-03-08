@@ -1,0 +1,14 @@
+(ns ClojureV.qurq)
+
+;; --- Video-Interlink: Remote DAC Manifestation ---
+;; This seed defines the protocol for mirroring high-density FPGA pixels to a Host (Mac) screen.
+
+(defn-ai Video_Capture_Braid [clk rst_n pixel_in]
+  "Capturing high-density pixels from the FPGA VDMA buffer"
+  (let [collapsed_pixel (qurq/read-sound-pixel out pixel_in)]
+    (qurq/transmit-gudot out collapsed_pixel)))
+
+(defn-ai Video_Stream_Protocol [clk rst_n captured_data]
+  "Formatting captured pixels for high-speed transmission via RJ45"
+  (let [stream_packet (qurq/bit-or out captured_data 0xVIDE01)]
+    (qurq/transmit-qu-dot out stream_packet)))

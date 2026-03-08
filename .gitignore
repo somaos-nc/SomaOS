@@ -1,0 +1,46 @@
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Node / Web Frontend
+node_modules/
+dist/
+build/
+.npm
+soma_web/dist/
+soma_web/node_modules/
+soma_web/vite_run.log
+soma_web/vite_output.log
+
+# Go / Backend
+SomaServer/fpga_sim
+SomaServer/fpga_sim.exe
+ClojureV/toolchain/go/clojurev
+ClojureV/toolchain/go/fix_test.go
+ClojureV/toolchain/go/fix_tests_block.go
+ClojureV/toolchain/go/fix_tests_script.go
+ClojureV/toolchain/go/run_fix.go
+ClojureV/toolchain/go/patch_clojurev.py
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+.venv/
+env/
+.env
+
+# Hardware Simulation (Icarus Verilog outputs)
+*.vcd
+*.vvp
+build/rtl/
+ClojureV/simulation/*.vcd
+ClojureV/simulation/*.vvp
+
+# Gemini / CLI logs
+.gemini/
+*.log

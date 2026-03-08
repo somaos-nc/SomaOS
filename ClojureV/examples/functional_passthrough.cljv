@@ -1,0 +1,6 @@
+; --- ClojureV Functional Seed ---
+; Manifests a pure functional passthrough of the SPHY flux.
+; (defn [module-name] [ports] (logic))
+
+(defn functional_passthrough [clk rst_n in]
+  (assign out in))

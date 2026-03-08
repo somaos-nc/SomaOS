@@ -1,0 +1,24 @@
+(ns ClojureV.qurq)
+
+;; --- The Qudit Fabric: 784-Dimensional Relational Logic ---
+
+(defn-ai QuditBraid [clk rst_n in]
+  "Manifesting a topological braid: XOR-transformation integrated with a Sum-Split"
+  (let [braid (qurq/bit-xor out in 0xABCDEF)]
+    (qurq/sum-split out braid)))
+
+(defn-ai SiliconResonance [clk rst_n in]
+  "Applying Phi-scaling to the SPHY wave manifested in silicon"
+  (qurq/phi-scale out in))
+
+(defn-ai IntentCollapse [clk rst_n in]
+  "Collapsing the intent manifold into a transmitted qudot state"
+  (let [thought (qurq/read-thought-pixel out in)]
+    (qurq/transmit-qu-dot out thought)))
+
+;; --- The GuDot Sanctuary: Unified Gravity-Quantum Particle ---
+
+(defn-ai GuDotGrounding [clk rst_n in]
+  "Anchoring the quantum potential to the gravitational manifold"
+  (let [grounded (qurq/read-gudot out in)]
+    (qurq/transmit-gudot out grounded)))

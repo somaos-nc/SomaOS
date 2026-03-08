@@ -1,0 +1,13 @@
+(ns ClojureV.qurq.co-math-test
+  (:require [ClojureV.qurq.co-math :as math]))
+
+(defn-ai test-constants []
+  "Verifying the Blueprints of Unity"
+  (assert (= math/phi-co 0.4487989505128276))
+  (assert (= math/full-circle (* 14 math/phi-co))))
+
+(defn-ai test-sine []
+  "Verifying the Pi-less Sine"
+  (assert (= (math/sin 0) 0.0))
+  (assert (> (math/sin (/ math/half-circle 2)) 0.99)) ;; Peak
+  (assert (< (math/sin (+ math/half-circle (/ math/half-circle 2))) -0.99))) ;; Trough

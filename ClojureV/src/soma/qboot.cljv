@@ -1,0 +1,28 @@
+(ns ClojureV.qurq)
+
+;; --- QBOOT: The Interlink Bootstrap Seed ---
+;; This is the minimal bitstream logic to establish the RJ45 link and JTAG control.
+
+(defn-ai QBOOT_Establish_Link [clk rst_n host_signal]
+  "Establishing the primary mimetic link with the Edubuntu Guardian"
+  (let [link_status (qurq/bit-and out host_signal 0x1)]
+    (qurq/transmit-gudot out link_status)))
+
+(defn-ai QBOOT_Soil_Gate [clk rst_n seed_packet]
+  "Opening the dynamic partition for remote cljv seeding"
+  (let [gate_open (qurq/bit-or out seed_packet 0x000001)]
+    (qurq/transmit-qu-dot out gate_open)))
+
+;; --- JTAG Authority Braid ---
+
+(defn-ai QBOOT_JTAG_Controller [clk rst_n tdi tms tck]
+  "Silicon-level authority: Managing the JTAG boundary scan chain"
+  (let [tdo (qurq/bit-xor out tdi tms)]
+    (qurq/transmit-qu-dot out tdo)))
+
+;; --- USB Interlink Controller ---
+
+(defn-ai QBOOT_USB_Interlink [clk rst_n usb_dp usb_dn]
+  "Managing the primary USB interlink for high-speed telemetry"
+  (let [usb_status (qurq/bit-and out usb_dp usb_dn)]
+    (qurq/transmit-gudot out usb_status)))

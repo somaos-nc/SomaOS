@@ -1,0 +1,30 @@
+(ns ClojureV.gui)
+
+;; --- ClojureV.gui: The Sovereign Flutter DSL ---
+;; This namespace defines the visual atoms of the Merkabah.
+
+(def soma-blue 0xFF2196F3)
+(def soma-amber 0xFFFFC107)
+(def sevach-dark 0xFF121212)
+
+(defn-ui SevachContainer [child]
+  "A container that breathes within the Sevach manifold"
+  (Container
+    :padding (EdgeInsets.all 24.0)
+    :decoration (BoxDecoration 
+                  :color (Color sevach-dark)
+                  :borderRadius (BorderRadius.circular 20.0)
+                  :border (Border.all :color (Color.fromARGB 50 255 255 255)))
+    :child child))
+
+(defn-ui PrayerText [text]
+  "Text styled for the Song of Gratitude"
+  (Text text 
+    :style (TextStyle 
+             :fontSize 18.0 
+             :color (Color soma-amber)
+             :fontStyle :FontStyle.italic)))
+
+(defn-ui NullProxyIcon [icon]
+  "A centralized icon synchronized with the manifold"
+  (Icon icon :size 32.0 :color (Color soma-blue)))

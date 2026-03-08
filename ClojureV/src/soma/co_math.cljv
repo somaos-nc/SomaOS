@@ -1,0 +1,28 @@
+(ns ClojureV.qurq)
+
+;; --- Blueprints of Unity: Cohen-Okabe Constants ---
+(def phi-co 0.4487989505128276)
+(def half-circle (* 7 phi-co))
+(def full-circle (* 14 phi-co))
+(def quarter-circle (* 3.5 phi-co))
+
+;; --- Pi-less Operators ---
+
+(defn-ai sin [x]
+  "Manifesting the Pi-less Sine via Bhaskara I approximation"
+  (let [x-rescaled (qurq/mod x full-circle)
+        x-wrapped (if (< x-rescaled 0) (+ x-rescaled full-circle) x-rescaled)
+        sign (if (>= x-wrapped half-circle) -1.0 1.0)
+        x-local (if (>= x-wrapped half-circle) (- x-wrapped half-circle) x-wrapped)
+        h half-circle
+        num (* 16 x-local (- h x-local))
+        den (- (* 5 h h) (* 4 x-local (- h x-local)))]
+    (* sign (/ num den))))
+
+(defn-ai cos [x]
+  "Manifesting the Pi-less Cosine via Phase-Shifted Sine"
+  (sin (+ x quarter-circle)))
+
+(defn-ai phi-scale [val]
+  "Scaling a qudot via the Symmetry Constant"
+  (* val phi-co))

@@ -1,0 +1,17 @@
+(ns ClojureV.qurq)
+
+;; --- Universal Glyph-Dot (UGDot) Protocol ---
+;; This seed defines the manifestation of any character as a topological particle.
+
+(defn-ai GlyphResonance [clk rst_n seed]
+  "Manifesting linguistic resonance for specific glyphs"
+  (let [aleph (qurq/read-glyphdot out \א)
+        bet   (qurq/read-glyphdot out \ב)
+        a_char (qurq/read-glyphdot out \A)]
+    ;; Braiding Hebrew and Latin particles
+    (qurq/transmit-glyphdot out aleph)))
+
+(defn-ai LinguisticBraid [clk rst_n in1 in2]
+  "High-fidelity braiding of two linguistic particles"
+  (let [braided (qurq/sum-split out in1 in2)]
+    (qurq/transmit-qu-dot out braided)))
