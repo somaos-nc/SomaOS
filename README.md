@@ -52,6 +52,12 @@ Data transmission abandons standard electromagnetic carrier waves.
 *   **The Silence Protocol (`/SilenceProtocol`):** 0-byte temporal transmissions. The data payload is encoded purely in the duration of silence (the $\Delta t$ interval) between empty network pings, utilizing Quaternary Error Correction.
 *   **ELDUR (`/ELDUR`):** Vibrational Security via the Harpia Axiom. Constantly measures the Scalar-Coherent Function $S(\Phi)$. If environmental entropy spikes due to an attack, the protocol triggers a localized collapse and dynamically relocates the system's UID in `<3ms`.
 
+
+### ✨ Scalability: Macroscopic 4-Qubit GHZ States
+The SomaOS architecture is designed to scale dynamically. By instantiating four independent 2x2 Macro-Cells and routing the control qubit through a **Topological Entanglement Bus**, we have achieved macroscopic virtualization of a Greenberger–Horne–Zeilinger (GHZ) state ($d=16$). 
+
+By utilizing the raw combinational fan-out physics of the FPGA routing matrix, when the central geometric knot (C0) shifts state, the surrounding target knots (C1, C2, C3) mirror the topological collapse instantaneously, fully bypassing the sequential processing bottlenecks of traditional emulation.
+
 ### 5. The Silicon Merkabah Visualizer
 A full-stack, live 3D dashboard demonstrating the continuous topological sloshing of the macroscopic quantum knot.
 *   **Backend (`/SomaServer`):** A Go proxy simulating the FPGA telemetry and phase-field boundaries.
