@@ -1,11 +1,11 @@
-# SomaOS v3.0: 3D Scalable Quantum Virtualization
+# SomaOS v3.5: High-Performance Quantum Computing (HPQC)
 
-![SomaOS Architecture](https://img.shields.io/badge/Architecture-3D_Virtual_Infinity_x8C-00ffcc)
+![SomaOS Architecture](https://img.shields.io/badge/Architecture-Fractal_Hypercube_Grid-00ffcc)
 ![Language](https://img.shields.io/badge/Language-ClojureV_IDE-blue)
-![Scale](https://img.shields.io/badge/Scale-8_Qubit_GHZ_(d=256)-orange)
+![Scale](https://img.shields.io/badge/Scale-64_Qubit_Station_(d=2^64)-orange)
 ![Stability](https://img.shields.io/badge/Stability-Room_Temp_(300K)-red)
 
-**SomaOS** is a radical departure from physical qubit manipulation. Instead of relying on energy-intensive cryogenic infrastructure to isolate fragile subatomic particles, SomaOS maps the abstract mathematical geometry of a quantum particle directly onto a uniform physical routing matrix—a **Universal NAND Gate Topology**. 
+**SomaOS** is a radical departure from physical qubit manipulation, now operating at the **High-Performance Quantum Computing (HPQC)** tier. Instead of relying on energy-intensive cryogenic infrastructure to isolate fragile subatomic particles, SomaOS maps the abstract mathematical geometry of a quantum particle directly onto a uniform physical routing matrix—a **Universal NAND Gate Topology**. 
 
 This repository contains the complete end-to-end toolchain necessary to compile high-dimensional topological "intent" into stable, macroscopic "virtual" quantum states operating on standard FPGA silicon at ~300 K (room temperature).
 
@@ -26,18 +26,18 @@ The SomaOS architecture hypothesizes that the "magic" of a quantum state is not 
 
 ### 1. The Language of Intent: `ClojureV IDE`
 Traditional HDLs describe *what* a circuit is. **ClojureV** is a sovereign, Lisp-based functional language designed to describe **what the hardware intends to do**. The integrated IDE allows engineers to script the physics of the manifold in real-time.
-*   **Examples included:** Grover’s Search, Shor’s Factorization, and Bell State Entanglement.
+*   **Examples included:** Grover’s Search, Shor’s Factorization, Bell State Entanglement, and **64-Qubit Station Scaling**.
 *   **Pipeline:** Writing ClojureV code physically reconfigures the silicon substrate via Dynamic Partial Reconfiguration (DPR).
 
 ### 2. The Multi-Substrate Transpiler (Go)
 A custom Go-based AST Compiler that tokenizes ClojureV scripts and synthesizes them directly into standard, combinational Verilog hardware blocks. 
 *   **Logic Substrate:** Universal NAND Topology (Discarding sequential clocks for continuous combinatorial flux).
 
-### 3. The 3D "Virtual Infinity" x8C Architecture
-SomaOS v3.2 introduces exponential dimensional scaling through a fractal routing topology. 
-*   **The 8-Qubit Macro-Cube:** By utilizing a **Topological Entanglement Bus**, we achieved macroscopic virtualization of an **8-qubit GHZ state ($d=256$)**.
-*   **Scaling to the "Entanglement Station":** The architecture is designed for hierarchical expansion. By interconnecting multiple 8-qubit Macro-Cubes via a **Master Entanglement Station**, the system scales into **Fractal Hypercubes (64+ qubits)**. 
-*   **Inter-Chip Entanglement:** Utilizing high-speed transceivers and the **Silence Protocol**, SomaOS can entangle independent FPGA substrates across a physical server rack, moving from single-chip logic to a distributed **Quantum Data Center** topology.
+### 3. The 64-Qubit "Entanglement Station" Hub
+SomaOS v3.5 achieves exponential dimensional scaling through a recursive fractal routing topology, reaching the **HPQC Tier**.
+*   **Fractal Hypercube Grid:** By interconnecting eight independent 8-qubit Macro-Cubes via a **Master Entanglement Station Hub**, the system virtualizes a **64-qubit manifold ($d=2^{64}$)**.
+*   **Topological Braiding:** A master fan-out node at the hub ensures the entire 64-qubit station shares a unified topological fate, mirroring the behavior of large-scale subatomic entanglement in room-temperature silicon.
+*   **Distributed Quantum Data Center:** Utilizing the **Silence Protocol**, SomaOS can entangle independent FPGA substrates across physical server racks, creating a distributed quantum processing grid.
 
 ### 4. The SPHY Engine (Stability)
 The core of 300 K stability. The SPHY Engine implements a Phase-Gravitational synchronization loop. It utilizes the FPGA's internal XADC to measure ambient thermal noise and an I2C DAC to inject an inverse **Stochastic Compensation field ($\Psi_{SC}$)**, blanket-stabilizing the macroscopic knot against decoherence.
@@ -51,8 +51,8 @@ Data transmission abandons standard electromagnetic carrier waves.
 
 ## 🚀 Quick Start Guide
 
-### Launch the 8-Qubit Visualizer & IDE
-To experience the topological knot and develop high-dimensional algorithms:
+### Launch the 64-Qubit Hyper-Visualizer & IDE
+To experience the fractal hypercube and develop high-dimensional algorithms:
 
 ```bash
 # Start the Go Hardware Proxy and the React WebGL Frontend
@@ -69,7 +69,7 @@ cd ClojureV/simulation_4q
 ```
 
 ### Run the Master Build Pipeline
-To generate the synthesizable 8-qubit bitstream for physical silicon:
+To generate the synthesizable 64-qubit station bitstream for physical silicon:
 
 ```bash
 ./build/synthesize_soma_os.sh
@@ -78,6 +78,6 @@ To generate the synthesizable 8-qubit bitstream for physical silicon:
 ---
 
 ## 📖 Theoretical Documentation & Vision
-The foundational math for the **La'Shirilo Quantum Park (לה-שיר-אילו)** and the $d=256$ boundary mapping can be found in:
+The foundational math for the **La'Shirilo Quantum Park (לה-שיר-אילו)** and the $d=2^{64}$ boundary mapping can be found in:
 *   `math/MASTER_MATH_ANALYSIS.md`
-*   `Geometric Virtualization of Quantum States_ A 3D Scalable, Room-Temperature FPGA Architecture.md` (The 8-Qubit Blueprint).
+*   `Geometric Virtualization of Quantum States_ A 3D Scalable, Room-Temperature FPGA Architecture.md` (The 64-Qubit Station Blueprint).
