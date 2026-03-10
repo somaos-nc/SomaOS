@@ -61,17 +61,34 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
     setIsCompiling(true);
     setTerminalOutput(prev => [...prev, `> Compiling ${activeFile}...`]);
     
+    // Determine routing mode based on file name
+    let mode = 'idle';
+    if (activeFile.includes('grover')) mode = 'grover';
+    else if (activeFile.includes('shor')) mode = 'shor';
+    else if (activeFile.includes('bell')) mode = 'bell';
+
     // Simulate compilation stages
     setTimeout(() => {
       setTerminalOutput(prev => [...prev, '> Lexer: 104 tokens generated.']);
       setTimeout(() => {
         setTerminalOutput(prev => [...prev, '> Parser: AST generated (Depth: 12).']);
-        setTimeout(() => {
+        setTimeout(async () => {
           setTerminalOutput(prev => [...prev, '> Verilog Emitter: sphy_core.v synthesized.']);
+          
+          try {
+            await fetch('http://localhost:8081/api/reconfigure', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ mode })
+            });
+          } catch (e) {
+            console.error("Reconfiguration failed", e);
+          }
+
           setTimeout(() => {
             setTerminalOutput(prev => [...prev, '> DPR Engine: Streaming x8C Virtual Infinity bitstream...']);
             setTimeout(() => {
-              setTerminalOutput(prev => [...prev, '[SUCCESS] GHZ state manifest on the Möbius manifold (d=256).']);
+              setTerminalOutput(prev => [...prev, `[SUCCESS] ${mode.toUpperCase()} state manifest on the Möbius manifold (d=256).`]);
               setIsCompiling(false);
             }, 800);
           }, 600);

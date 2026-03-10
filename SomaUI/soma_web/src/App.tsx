@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Dashboard } from './components/Dashboard'
 import { ClojureVIDE } from './components/ClojureVIDE'
+import { TopologicalFlowWindow } from './components/TopologicalFlowWindow'
 
 export type HardwareState = {
   c0: boolean;
@@ -14,6 +15,7 @@ export type HardwareState = {
   thermal_load: number;
   phase_field: number;
   active_cells: number;
+  routing_mode: string;
 };
 
 function App() {
@@ -28,7 +30,8 @@ function App() {
     c7: false,
     thermal_load: 35.0,
     phase_field: 0.0,
-    active_cells: 8
+    active_cells: 8,
+    routing_mode: 'idle'
   });
 
   const [isIdeOpen, setIsIdeOpen] = useState(false);
@@ -79,6 +82,9 @@ function App() {
       <main className="main-content">
         <Dashboard hwState={hwState} />
       </main>
+
+      {/* Floating Topological Flow Window (Persists over everything) */}
+      <TopologicalFlowWindow state={hwState} />
 
       {isIdeOpen && <ClojureVIDE onClose={() => setIsIdeOpen(false)} />}
     </div>

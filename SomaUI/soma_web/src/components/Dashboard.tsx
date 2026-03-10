@@ -68,7 +68,7 @@ export const Dashboard = ({ hwState }: { hwState: HardwareState }) => {
 
       </div>
 
-      <div className="visualization-panel">
+      <div className="visualization-panel" style={{ position: 'relative' }}>
         <h2>Topological Entanglement Bus (d={dimension} GHZ Macro-State)</h2>
         <LogicBlock state={hwState} />
       </div>
