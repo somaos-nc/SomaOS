@@ -4,9 +4,9 @@ import { Sphere, Line, Text, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { HardwareState } from '../App';
 
-const ElectronFlow = ({ mode }: { mode: string }) => {
+const PhotonicFlow = ({ mode }: { mode: string }) => {
   const pointsRef = useRef<THREE.Points>(null);
-  const particleCount = 1000;
+  const particleCount = 1500;
 
   // Create different flow paths based on the routing mode
   const particles = useMemo(() => {
@@ -16,7 +16,7 @@ const ElectronFlow = ({ mode }: { mode: string }) => {
       positions[i * 3] = (Math.random() - 0.5) * 4;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 4;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
-      velocities[i] = 0.01 + Math.random() * 0.05;
+      velocities[i] = 0.02 + Math.random() * 0.08; // Photons move faster
     }
     return { positions, velocities };
   }, [mode]);
@@ -30,7 +30,7 @@ const ElectronFlow = ({ mode }: { mode: string }) => {
       
       if (mode === 'grover') {
         // Spiral Braiding Flow
-        const angle = time * 2 + i * 0.1;
+        const angle = time * 3 + i * 0.1;
         const radius = 1.5 + Math.sin(time + i) * 0.5;
         positions[idx] = Math.cos(angle) * radius;
         positions[idx + 1] = Math.sin(angle) * radius;
@@ -44,17 +44,25 @@ const ElectronFlow = ({ mode }: { mode: string }) => {
       } else if (mode === 'bell') {
         // Torsional Entangled Flow
         const r = 1.5;
-        const t = time * 3 + i * 0.01;
+        const t = time * 4 + i * 0.01;
         positions[idx] = r * Math.cos(t);
         positions[idx + 1] = r * Math.sin(t);
         positions[idx + 2] = (i % 2 === 0) ? Math.sin(t) : -Math.sin(t);
+      } else if (mode === 'station') {
+        // Master Station Hub: Fractal Star Burst
+        const t = time * 2;
+        const radius = (i % 3) + 1;
+        const angle1 = (i / particleCount) * Math.PI * 2 + t;
+        const angle2 = ((i * 3) / particleCount) * Math.PI * 2 - t;
+        positions[idx] = Math.cos(angle1) * Math.sin(angle2) * radius;
+        positions[idx + 1] = Math.sin(angle1) * Math.sin(angle2) * radius;
+        positions[idx + 2] = Math.cos(angle2) * radius;
       } else {
-        // Idle Random Flux
-        positions[idx] += (Math.random() - 0.5) * 0.02;
-        positions[idx + 1] += (Math.random() - 0.5) * 0.02;
-        positions[idx + 2] += (Math.random() - 0.5) * 0.02;
+        // Idle Random Flux (Thermal)
+        positions[idx] += (Math.random() - 0.5) * 0.04;
+        positions[idx + 1] += (Math.random() - 0.5) * 0.04;
+        positions[idx + 2] += (Math.random() - 0.5) * 0.04;
         
-        // Reset if too far
         if (Math.abs(positions[idx]) > 3) positions[idx] = 0;
       }
     }
@@ -72,10 +80,10 @@ const ElectronFlow = ({ mode }: { mode: string }) => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
-        color={mode === 'idle' ? '#444' : '#00ffcc'}
+        size={0.06}
+        color={mode === 'idle' ? '#4a5568' : '#00ffff'} // Cyan/White Photonic glow
         transparent
-        opacity={0.6}
+        opacity={0.8}
         blending={THREE.AdditiveBlending}
       />
     </points>
@@ -102,11 +110,11 @@ export const TopologicalFlowWindow = ({ state }: { state: HardwareState }) => {
               <meshBasicMaterial color="#1e293b" transparent opacity={0.3} />
             </mesh>
             
-            <ElectronFlow mode={state.routing_mode} />
+            <PhotonicFlow mode={state.routing_mode} />
             
             {/* Legend Text */}
             <Text position={[0, -2.5, 0]} fontSize={0.2} color="#4b5563">
-              REAL-TIME MACROSCOPIC ELECTRON TRAFFICKING
+              REAL-TIME PHOTONIC ENTANGLEMENT TRAFFICKING
             </Text>
           </Float>
         </Canvas>
