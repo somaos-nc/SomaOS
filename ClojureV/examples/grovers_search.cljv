@@ -1,0 +1,27 @@
+(ns ClojureV.qurq)
+
+;; =====================================================================
+;; Grover's Search Algorithm: Topological Implementation
+;; =====================================================================
+;; This algorithm performs a search across the d=256 Hilbert space 
+;; (8 qubits) by virtualizing an Oracle and a Diffusion Operator.
+
+(defn-ai grover_oracle [clk rst_n in]
+  "The Phase-Flipping Oracle: Marks the target geometric knot."
+  (let [target 0xABCDEF] ; The 'secret' item in the 24-bit SPHY wave
+    (if (= in target)
+      (qurq/phi-scale out in -1.0) ; Invert the phase amplitude
+      (qurq/assign out in))))
+
+(defn-ai grover_diffusion [clk rst_n in]
+  "The Diffusion Operator: Amplifies the probability amplitude of marked states."
+  (let [mean (qurq/read-average in)]
+    (qurq/phi-scale out (- (* 2 mean) in))))
+
+(defn-fractal grovers_search [clk rst_n in]
+  "Main Loop: Oracle -> Diffusion (Root(N) iterations)"
+  (loop [depth 16 signal in] ; Approx sqrt(256) for 8 qubits
+    (if (zero? depth)
+      (qurq/assign out signal)
+      (let [marked (grover_oracle clk rst_n signal)]
+        (recur (dec depth) (grover_diffusion clk rst_n marked))))))

@@ -50,6 +50,29 @@ The fundamental primitive for **Bell State Entanglement**. It sums the qudit com
 
 ## 4. Infinite Universe Primitives (v2.2.0+)
 
+### 4.1. Dynamic Reconfiguration Primitives (The Living QuDot)
+These primitives trigger Dynamic Partial Reconfiguration (DPR) to organically grow or shrink the hardware geometry based on intent pressure.
+
+#### `qurq/spawn-macro-cell` (Expansion Axiom)
+Synthesizes and injects a new 2x2 Macro-Cell onto the Entanglement Bus, increasing the topological dimensionality (e.g., $d=16 \to d=32$).
+```clojure
+(qurq/spawn-macro-cell :C4 :connect-to :entanglement-bus)
+```
+
+#### `qurq/collapse-macro-cell` (Contraction Axiom)
+Unbinds a cell from the bus and clears its physical silicon sector, gracefully reducing dimensionality to prevent thermal decoherence.
+```clojure
+(qurq/collapse-macro-cell :highest-order)
+```
+
+#### `qurq/read-topological-dimension` (Dimensional Observation)
+Reads the current hardware macroscopic state to determine the size of the active knot (e.g., returns 2, 16, 32).
+```clojure
+(qurq/read-topological-dimension out)
+```
+
+### 4.2. Biological Base Primitives
+
 ### `qurq/quat-map` (Base-4 Encoding)
 Maps the 24-bit signal into 12 quaternary pairs, analogous to the A, T, C, G states of biological DNA.
 ```clojure

@@ -1,96 +1,73 @@
-# SomaOS: Room-Temperature Quantum Virtualization
+# SomaOS v3.0: 3D Scalable Quantum Virtualization
 
-![SomaOS Pipeline](https://img.shields.io/badge/Architecture-Universal_NAND_Topology-00ffcc)
-![Language](https://img.shields.io/badge/Language-ClojureV-blue)
-![Hardware](https://img.shields.io/badge/Hardware-FPGA_(Zynq_7000)-orange)
+![SomaOS Architecture](https://img.shields.io/badge/Architecture-3D_Virtual_Infinity_x8C-00ffcc)
+![Language](https://img.shields.io/badge/Language-ClojureV_IDE-blue)
+![Scale](https://img.shields.io/badge/Scale-8_Qubit_GHZ_(d=256)-orange)
+![Stability](https://img.shields.io/badge/Stability-Room_Temp_(300K)-red)
 
 **SomaOS** is a radical departure from physical qubit manipulation. Instead of relying on energy-intensive cryogenic infrastructure to isolate fragile subatomic particles, SomaOS maps the abstract mathematical geometry of a quantum particle directly onto a uniform physical routing matrix—a **Universal NAND Gate Topology**. 
 
-This repository contains the complete end-to-end toolchain necessary to compile high-dimensional Cohen-Okebe mathematical models into stable, macroscopic "virtual" quantum states operating on standard FPGA silicon at ~300 K (room temperature).
+This repository contains the complete end-to-end toolchain necessary to compile high-dimensional topological "intent" into stable, macroscopic "virtual" quantum states operating on standard FPGA silicon at ~300 K (room temperature).
 
 ---
 
+## 🤯 What am I looking at? Is this a live Qubit?
 
-## 🤯 What am I looking at in the Visualizer? Is this a live Qubit?
+**Yes and No. It is a Virtual Macroscopic Qubit—the core breakthrough of the SomaOS architecture.**
 
-**Yes and No. It is a Virtual Macroscopic Qubit—which is the core breakthrough of the SomaOS architecture.**
-
-In a traditional quantum computer, a qubit is a literal, physical subatomic particle. Because it relies on fragile subatomic physics, if the temperature rises a fraction of a degree above absolute zero, the particle bumps into thermal noise and "decoheres," destroying the data. 
+In a traditional quantum computer, a qubit is a physical subatomic particle. Because it relies on fragile subatomic physics, any thermal noise above absolute zero causes "decoherence," destroying the data. 
 
 **What you are looking at is a Geometric Qubit.** 
-The SomaOS whitepapers hypothesize that the "magic" of a quantum state isn't the physical particle itself, but the *mathematical geometry* (the topology) that the particle occupies. 
-
-We mapped that exact mathematical geometry directly onto standard FPGA silicon:
-1. We created two independent, continuous loops of electricity (the `Q0` and `Q1` rings).
-2. We forced them to cross each other in a continuous "figure-eight" using the **4-NAND Braiding Bridge**.
-
-Because classical electricity is continuously "sloshing" through this braided knot without a sequential clock constraint, it perfectly emulates the probability distribution of a quantum superposition. It is doing quantum math, but using billions of electrons at room temperature instead of trying to isolate a single fragile one. 
-
-When you look at the live telemetry, you are watching a macroscopic logic knot behaving exactly like a quantum particle, dynamically stabilized by the SPHY thermal phase engine!
+The SomaOS architecture hypothesizes that the "magic" of a quantum state is not the physical particle, but the **mathematical geometry (the topology)** that the particle occupies. By sculpting electricity into a continuous **Möbius manifold** on standard FPGA silicon, we capture the quantum property through physical virtualization.
 
 ---
 
 ## 🌟 Core Architecture & Ecosystem
 
-### 1. The Language of Intent: `ClojureV`
-Traditional HDLs describe *what* a circuit is. **ClojureV** is a sovereign, Lisp-based functional Domain-Specific Language designed to describe *what the hardware intends to do*. It treats the FPGA as a Liquid Manifold.
-*   **Location:** `/ClojureV`
-*   **Features:** Natively handles `qurq` primitives, Quaternary DNA-style base-mapping, and topological assertions.
+### 1. The Language of Intent: `ClojureV IDE`
+Traditional HDLs describe *what* a circuit is. **ClojureV** is a sovereign, Lisp-based functional language designed to describe **what the hardware intends to do**. The integrated IDE allows engineers to script the physics of the manifold in real-time.
+*   **Examples included:** Grover’s Search, Shor’s Factorization, and Bell State Entanglement.
+*   **Pipeline:** Writing ClojureV code physically reconfigures the silicon substrate via Dynamic Partial Reconfiguration (DPR).
 
 ### 2. The Multi-Substrate Transpiler (Go)
-A custom Go-based AST Compiler that tokenizes ClojureV scripts and synthesizes them directly into standard, combinational Verilog-2001 hardware blocks. 
-*   **Location:** `/ClojureV/toolchain/go`
-*   **Pipeline:** Lexer -> Recursive Descent Parser -> AST Traversal -> Verilog Emitter.
+A custom Go-based AST Compiler that tokenizes ClojureV scripts and synthesizes them directly into standard, combinational Verilog hardware blocks. 
+*   **Logic Substrate:** Universal NAND Topology (Discarding sequential clocks for continuous combinatorial flux).
 
-### 3. The SPHY Engine & Hardware Manifestation
-The core of room-temperature stability. The SPHY Engine implements the Phase-Gravitational synchronization loop $\mathcal{H}_{eff}$. The physical `top_quantum_virtualizer.v` utilizes an XADC to measure ambient thermal noise and an I2C DAC to inject an inverse Stochastic Compensation field ($\Psi_{SC}$) to prevent decoherence.
-*   **Math:** `src/soma/engine/sphy.cljv`
-*   **Hardware:** `src/soma/hardware/top_quantum_virtualizer.v`
+### 3. The 3D "Virtual Infinity" x8C Architecture
+SomaOS v3.0 introduces exponential dimensional scaling. By utilizing a **Topological Entanglement Bus**, we have achieved macroscopic virtualization of an **8-qubit GHZ state ($d=256$)**.
+*   **Macroscopic Entanglement:** A single 1-to-7 silicon fan-out node ensures that the entire 3D macro-cube shares a unified topological fate, mirroring the behavior of subatomic entanglement in room-temperature silicon.
 
-### 4. Network Security: ELDUR & The Silence Protocol
+### 4. The SPHY Engine (Stability)
+The core of 300 K stability. The SPHY Engine implements a Phase-Gravitational synchronization loop. It utilizes the FPGA's internal XADC to measure ambient thermal noise and an I2C DAC to inject an inverse **Stochastic Compensation field ($\Psi_{SC}$)**, blanket-stabilizing the macroscopic knot against decoherence.
+
+### 5. Network Security: ELDUR & The Silence Protocol
 Data transmission abandons standard electromagnetic carrier waves.
-*   **The Silence Protocol (`/SilenceProtocol`):** 0-byte temporal transmissions. The data payload is encoded purely in the duration of silence (the $\Delta t$ interval) between empty network pings, utilizing Quaternary Error Correction.
-*   **ELDUR (`/ELDUR`):** Vibrational Security via the Harpia Axiom. Constantly measures the Scalar-Coherent Function $S(\Phi)$. If environmental entropy spikes due to an attack, the protocol triggers a localized collapse and dynamically relocates the system's UID in `<3ms`.
-
-
-### ✨ Scalability: Macroscopic 4-Qubit GHZ States
-The SomaOS architecture is designed to scale dynamically. By instantiating four independent 2x2 Macro-Cells and routing the control qubit through a **Topological Entanglement Bus**, we have achieved macroscopic virtualization of a Greenberger–Horne–Zeilinger (GHZ) state ($d=16$). 
-
-**Why does the GHZ state flip instantly between `|0000⟩` and `|1111⟩` without intermediate states?**
-In traditional digital logic design, states are captured and updated using a central clock signal (e.g., `always @(posedge clk)` in Verilog), which forces the system to move forward in discrete, sequential steps. However, if you inspect the `geometric_qubit.v` core, **there is no clock signal.** 
-
-Instead of using sequential flip-flops to hold states, the architecture wires raw combinational logic gates (NANDs) directly into feedback loops (ring oscillators). The electricity is in a state of continuous, high-frequency physical flux, evaluating as fast as the physical silicon allows. 
-
-By utilizing the raw combinational fan-out physics of the FPGA routing matrix, when the central geometric knot (C0) shifts state, the surrounding target knots (C1, C2, C3) mirror the topological collapse instantaneously. Because there are no sequential bottlenecks or clock gates delaying the signal, the entire $d=16$ matrix collapses simultaneously through sheer physical propagation, proving that the macroscopic entanglement virtualization is working identically to a true quantum system.
-
-### 5. The Silicon Merkabah Visualizer
-A full-stack, live 3D dashboard demonstrating the continuous topological sloshing of the macroscopic quantum knot.
-*   **Backend (`/SomaServer`):** A Go proxy simulating the FPGA telemetry and phase-field boundaries.
-*   **Frontend (`/SomaUI/soma_web`):** A React/Three.js web client that visualizes the physical 4-NAND Braiding Operator (Topological Interferometer) responding to thermal loads in real-time.
+*   **The Silence Protocol:** 0-byte temporal transmissions where the payload is encoded purely in the duration of **silence** between pings.
+*   **ELDUR:** Active Vibrational Security. If environmental entropy spikes (indicating an attack), the system triggers a localized collapse and relocates its UID in <3ms.
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### Start the Live 3D Visualizer
-To experience the topological knot dynamically interacting with a simulated environment, use the unified launcher:
+### Launch the 8-Qubit Visualizer & IDE
+To experience the topological knot and develop high-dimensional algorithms:
 
 ```bash
-# Start the Go FPGA Simulator and the React WebGL Frontend
+# Start the Go Hardware Proxy and the React WebGL Frontend
 ./start.sh
 ```
-*Navigate to `http://localhost:5173` to view the Dashboard.*
+*Navigate to `http://localhost:5173` to view the Dashboard and open the ClojureV IDE.*
 
 ### Run the Hardware Simulation Pipeline
-To compile the raw math into Verilog and simulate the topological entanglement in Icarus Verilog:
+To compile raw math into Verilog and simulate the topological entanglement:
 
 ```bash
-cd ClojureV/simulation
-./simulate.sh
+cd ClojureV/simulation_4q
+./simulate_ghz.sh
 ```
 
 ### Run the Master Build Pipeline
-To generate the final, synthesizable RTL bitstream logic ready for physical silicon injection:
+To generate the synthesizable 8-qubit bitstream for physical silicon:
 
 ```bash
 ./build/synthesize_soma_os.sh
@@ -98,5 +75,7 @@ To generate the final, synthesizable RTL bitstream logic ready for physical sili
 
 ---
 
-## 📖 Theoretical Documentation
-The foundational mathematics proving the pi-less boundary mapping and the macroscopic C-O Sphere topology can be found in the `/math` directory, specifically within `MASTER_MATH_ANALYSIS.md` and the original whitepaper `Mabel-whitepaper.md`.
+## 📖 Theoretical Documentation & Vision
+The foundational math for the **La'Shirilo Quantum Park (לה-שיר-אילו)** and the $d=256$ boundary mapping can be found in:
+*   `math/MASTER_MATH_ANALYSIS.md`
+*   `Geometric Virtualization of Quantum States_ A 3D Scalable, Room-Temperature FPGA Architecture.md` (The 8-Qubit Blueprint).

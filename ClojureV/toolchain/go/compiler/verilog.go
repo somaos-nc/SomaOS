@@ -160,21 +160,81 @@ func emitVerilogStatement(node parser.Node) (string, error) {
 	}
 
 	if op == "let" {
-		// Just unwrap the let block's body for now since bindings are handled globally
-		if len(call.Args) > 1 {
-			for _, n := range call.Args[1:] {
-				code, err := emitVerilogStatement(n)
-				if err == nil {
-					v.WriteString(code)
-				}
-			}
-		}
-		return v.String(), nil
+	        // Handle let bindings topologically
+	        if len(call.Args) > 0 {
+	                if bindings, ok := call.Args[0].(*parser.List); ok {
+	                        for i := 0; i < len(bindings.Elements); i += 2 {
+	                                if i+1 < len(bindings.Elements) {
+	                                        if ident, isIdent := bindings.Elements[i].(*parser.Identifier); isIdent {
+	                                                if valCall, isCall := bindings.Elements[i+1].(*parser.Call); isCall {
+	                                                        valOp := strings.TrimPrefix(valCall.Callee, "qurq/")
+	                                                        if valOp == "measure-intent-pressure" {
+	                                                                v.WriteString(fmt.Sprintf("            // Sensing intent pressure into %s\n", strings.ReplaceAll(ident.Name, "-", "_")))
+	                                                        } else if valOp == "read-topological-dimension" {
+	                                                                v.WriteString(fmt.Sprintf("            // Reading topological dimension into %s\n", strings.ReplaceAll(ident.Name, "-", "_")))
+	                                                        } else {
+	                                                                v.WriteString(fmt.Sprintf("            // Let binding: %s\n", strings.ReplaceAll(ident.Name, "-", "_")))
+	                                                        }
+	                                                } else if valNum, isNum := bindings.Elements[i+1].(*parser.Number); isNum {
+	                                                        v.WriteString(fmt.Sprintf("            %s = %s;\n", strings.ReplaceAll(ident.Name, "-", "_"), formatArg(valNum)))
+	                                                }
+	                                        }
+	                                }
+	                        }
+	                }
+	        }
+	        if len(call.Args) > 1 {
+	                for _, n := range call.Args[1:] {
+	                        code, err := emitVerilogStatement(n)
+	                        if err == nil {
+	                                v.WriteString(code)
+	                        }
+	                }
+	        }
+	        return v.String(), nil
 	}
-
 	switch op {
-	case "assign":
-		if len(call.Args) >= 2 {
+	case "if":
+	        v.WriteString("            // IF Intent Evaluated\n")
+	        if len(call.Args) > 0 {
+	                condCode, _ := emitVerilogStatement(call.Args[0])
+	                v.WriteString(condCode)
+	        }
+	        if len(call.Args) > 1 {
+	                code, _ := emitVerilogStatement(call.Args[1])
+	                v.WriteString(code)
+	        }
+	        if len(call.Args) > 2 {
+	                code, _ := emitVerilogStatement(call.Args[2])
+	                v.WriteString(code)
+	        }
+	case "when":
+	        v.WriteString("            // WHEN Intent Evaluated\n")
+	        if len(call.Args) > 0 {
+	                condCode, _ := emitVerilogStatement(call.Args[0])
+	                v.WriteString(condCode)
+	        }
+	        if len(call.Args) > 1 {
+	                for _, n := range call.Args[1:] {
+	                        code, _ := emitVerilogStatement(n)
+	                        v.WriteString(code)
+	                }
+	        }
+	case "greater-than":
+	        v.WriteString(fmt.Sprintf("            // Evaluate greater-than: %s > %s\n", formatArg(call.Args[0]), formatArg(call.Args[1])))
+	case "less-than":
+	        v.WriteString(fmt.Sprintf("            // Evaluate less-than: %s < %s\n", formatArg(call.Args[0]), formatArg(call.Args[1])))
+	case "equal":
+	        v.WriteString(fmt.Sprintf("            // Evaluate equal: %s == %s\n", formatArg(call.Args[0]), formatArg(call.Args[1])))
+	case "spawn-macro-cell":
+	        if len(call.Args) >= 2 {
+	                v.WriteString(fmt.Sprintf("            // TRIGGER DPR: Spawn %s and connect to %s\n", formatArg(call.Args[0]), formatArg(call.Args[1])))
+	        }
+	case "collapse-macro-cell":
+	        if len(call.Args) >= 1 {
+	                v.WriteString(fmt.Sprintf("            // TRIGGER DPR: Collapse %s to release dimensionality\n", formatArg(call.Args[0])))
+	        }
+	case "assign":		if len(call.Args) >= 2 {
 			dest := formatArg(call.Args[0])
 			src := formatArg(call.Args[1])
 			v.WriteString(fmt.Sprintf("            %s = %s;\n", dest, src))

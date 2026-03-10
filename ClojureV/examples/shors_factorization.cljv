@@ -1,0 +1,30 @@
+(ns ClojureV.qurq)
+
+;; =====================================================================
+;; Shor's Factorization: Topological Implementation
+;; =====================================================================
+;; Performs factorization by finding the period (r) of the function
+;; f(x) = a^x mod N. The core is the Quantum Fourier Transform (QFT).
+
+(defn-ai modular_exponentiation [clk rst_n base exp mod]
+  "Geometric modular exponentiation: Mapping the sequence into the NAND-knot."
+  (let [phi_base (qurq/phi-scale base)]
+    (qurq/mod-exp out phi_base exp mod)))
+
+(defn-fractal quantum_fourier_transform [clk rst_n in]
+  "The Topological QFT: Rotating the Hilbert space vectors into the frequency domain."
+  (loop [q_idx 0 data in]
+    (if (= q_idx 8) ; 8-qubit register
+      (qurq/assign out data)
+      (let [h_gate (qurq/hadamard data q_idx) ; Superposition
+            cp_gate (qurq/controlled-phase h_gate q_idx)] ; Rotation
+        (recur (inc q_idx) cp_gate)))))
+
+(defn-fractal shors_factorization [clk rst_n n]
+  "The Main Protocol: Find period r to factorize N."
+  (let [a (qurq/select-coprime n)
+        x (qurq/superposition 8) ; Create 2^8 states simultaneously
+        f_x (modular_exponentiation clk rst_n a x n)]
+    ;; Finding the period 'r' using the frequency peak in the QFT manifold
+    (let [qft_result (quantum_fourier_transform clk rst_n f_x)]
+      (qurq/collapsed-period out qft_result))))

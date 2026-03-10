@@ -34,28 +34,28 @@ const RingOscillator = ({ position, color, isActive, speed = 1 }: { position: [n
 };
 
 // A Single 2x2 Macro-Cell (Geometric Qubit)
-const MacroCell = ({ position, state, label, isControl }: { position: [number, number, number], state: HardwareState, label: string, isControl?: boolean }) => {
-  const q0Color = state.q0 ? (isControl ? '#00FF00' : '#00FFFF') : '#FF0000';
-  const q1Color = state.q1 ? (isControl ? '#0088FF' : '#FF00FF') : '#AA0000';
+const MacroCell = ({ position, isActive, label, isControl }: { position: [number, number, number], isActive: boolean, label: string, isControl?: boolean }) => {
+  const q0Color = isActive ? (isControl ? '#00FF00' : '#00FFFF') : '#FF0000';
+  const q1Color = isActive ? (isControl ? '#0088FF' : '#FF00FF') : '#AA0000';
 
   return (
     <group position={position}>
       {/* Loop 0 (Polar) */}
-      <RingOscillator position={[-0.8, 0, 0]} color={q0Color} isActive={state.q0} speed={2} />
-      <Text position={[-0.8, -0.9, 0]} fontSize={0.2} color="white">Q0</Text>
+      <RingOscillator position={[-0.8, 0, 0]} color={q0Color} isActive={isActive} speed={2} />
+      <Text position={[-0.8, -0.9, 0]} fontSize={0.2} color="white">L0</Text>
       
       {/* Loop 1 (Azimuthal) */}
-      <RingOscillator position={[0.8, 0, 0]} color={q1Color} isActive={state.q1} speed={1.5} />
-      <Text position={[0.8, -0.9, 0]} fontSize={0.2} color="white">Q1</Text>
+      <RingOscillator position={[0.8, 0, 0]} color={q1Color} isActive={isActive} speed={1.5} />
+      <Text position={[0.8, -0.9, 0]} fontSize={0.2} color="white">L1</Text>
 
       {/* The 4-NAND Braiding Operator (XOR Bridge) */}
       <Line
         points={[[-0.3, 0, 0], [0.3, 0, 0]]}
-        color={(state.q0 || state.q1) ? "#FFFF00" : "#5a667d"}
+        color={isActive ? "#FFFF00" : "#5a667d"}
         lineWidth={3}
       />
       <Sphere position={[0, 0, 0]} args={[0.15, 16, 16]}>
-        <meshStandardMaterial color={(state.q0 !== state.q1) ? "#FFFF00" : "#5a667d"} emissive={(state.q0 !== state.q1) ? "#FFFF00" : "#000"} emissiveIntensity={0.8} />
+        <meshStandardMaterial color={isActive ? "#FFFF00" : "#5a667d"} emissive={isActive ? "#FFFF00" : "#000"} emissiveIntensity={0.8} />
       </Sphere>
       <Text position={[0, 0.5, 0]} fontSize={0.25} color={isControl ? "#00FFcc" : "#AAA"}>{label}</Text>
     </group>
@@ -75,31 +75,43 @@ const InnerKnot = ({ state }: { state: HardwareState }) => {
     }
   });
 
+  // Mapping the hardware state register to the 3D grid
+  const cells = [
+    { id: 'C0', state: state.c0, pos: [0, 2.5, 0], isControl: true },
+    { id: 'C1', state: state.c1, pos: [-3, 0, 2], isControl: false },
+    { id: 'C2', state: state.c2, pos: [3, 0, 2], isControl: false },
+    { id: 'C3', state: state.c3, pos: [-3, 0, -2], isControl: false },
+    { id: 'C4', state: state.c4, pos: [3, 0, -2], isControl: false },
+    { id: 'C5', state: state.c5, pos: [-4, -2.5, 0], isControl: false },
+    { id: 'C6', state: state.c6, pos: [4, -2.5, 0], isControl: false },
+    { id: 'C7', state: state.c7, pos: [0, -4, 0], isControl: false }
+  ];
+
+  // Only show active cells based on DPR state
+  const activeCellsToShow = cells.slice(0, state.active_cells);
+
   return (
     <group ref={knotRef}>
-      {/* C0: Control Qubit (Top) */}
-      <MacroCell position={[0, 2.5, 0]} state={state} label="C0 (Control)" isControl={true} />
-      
       {/* The Topological Entanglement Bus (Central Splitter) */}
       <Sphere position={[0, 0, 0]} args={[0.3, 32, 32]}>
-        <meshStandardMaterial color={state.q0 !== state.q1 ? "#FFFF00" : "#5a667d"} emissive={state.q0 !== state.q1 ? "#FFFF00" : "#000"} emissiveIntensity={1} />
+        <meshStandardMaterial color={state.c0 ? "#FFFF00" : "#5a667d"} emissive={state.c0 ? "#FFFF00" : "#000"} emissiveIntensity={1} />
       </Sphere>
       <Text position={[0, -0.5, 0]} fontSize={0.2} color="#FFF">Entanglement Bus</Text>
 
-      {/* Fan-Out Routing Lines */}
-      {/* C0 to Bus */}
-      <Line points={[[0, 2.0, 0], [0, 0.3, 0]]} color={state.q0 !== state.q1 ? "#FFFF00" : "#5a667d"} lineWidth={2} dashed={true} />
-      {/* Bus to C1 */}
-      <Line points={[[-0.3, 0, 0], [-2.5, -2.0, 0]]} color={state.q0 !== state.q1 ? "#FFFF00" : "#5a667d"} lineWidth={2} />
-      {/* Bus to C2 */}
-      <Line points={[[0, -0.3, 0], [0, -2.0, 0]]} color={state.q0 !== state.q1 ? "#FFFF00" : "#5a667d"} lineWidth={2} />
-      {/* Bus to C3 */}
-      <Line points={[[0.3, 0, 0], [2.5, -2.0, 0]]} color={state.q0 !== state.q1 ? "#FFFF00" : "#5a667d"} lineWidth={2} />
-
-      {/* C1, C2, C3: Target Qubits (Bottom row) */}
-      <MacroCell position={[-2.5, -2.5, 0]} state={state} label="C1 (Target)" />
-      <MacroCell position={[0, -2.5, 0]} state={state} label="C2 (Target)" />
-      <MacroCell position={[2.5, -2.5, 0]} state={state} label="C3 (Target)" />
+      {/* Fan-Out Routing Lines & Macro-Cells */}
+      {activeCellsToShow.map((cell) => (
+        <group key={cell.id}>
+          {/* Bus to Cell line */}
+          <Line 
+            points={[[0, 0, 0], [cell.pos[0], cell.pos[1], cell.pos[2]]]} 
+            color={cell.state ? "#FFFF00" : "#5a667d"} 
+            lineWidth={2} 
+            dashed={true}
+          />
+          {/* Macro-Cell */}
+          <MacroCell position={cell.pos as [number, number, number]} isActive={cell.state} label={cell.id} isControl={cell.isControl} />
+        </group>
+      ))}
     </group>
   );
 };
@@ -107,7 +119,7 @@ const InnerKnot = ({ state }: { state: HardwareState }) => {
 export const LogicBlock = ({ state }: { state: HardwareState }) => {
   return (
     <div className="canvas-container">
-      <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
+      <Canvas camera={{ position: [0, 2, 12], fov: 50 }}>
         <color attach="background" args={['#1c2841']} />
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} intensity={2.5} />

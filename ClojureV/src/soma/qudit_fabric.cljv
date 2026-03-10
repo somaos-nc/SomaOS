@@ -22,3 +22,19 @@
   "Anchoring the quantum potential to the gravitational manifold"
   (let [grounded (qurq/read-gudot out in)]
     (qurq/transmit-gudot out grounded)))
+
+;; --- 3D Scalable Macro-Cube (Virtual Infinity x8C Architecture) ---
+
+(defn-fractal GHZ_8Qubit_Cube [clk rst_n in]
+  "Manifesting an 8-qubit macroscopic GHZ state (d=256) via the 3D Entanglement Bus.
+   Implements the 'x8C' Virtual Infinity topology mapped to Q0-Q7 on the Möbius manifold."
+  (let [c0_anchor (qurq/spawn-macro-cell :C0 :anchor true)]
+    ;; The Topological Entanglement Bus instantaneously fan-out the C0 state
+    (qurq/spawn-macro-cell :C1 :connect-to :entanglement-bus :target c0_anchor)
+    (qurq/spawn-macro-cell :C2 :connect-to :entanglement-bus :target c0_anchor)
+    (qurq/spawn-macro-cell :C3 :connect-to :entanglement-bus :target c0_anchor)
+    (qurq/spawn-macro-cell :C4 :connect-to :entanglement-bus :target c0_anchor)
+    (qurq/spawn-macro-cell :C5 :connect-to :entanglement-bus :target c0_anchor)
+    (qurq/spawn-macro-cell :C6 :connect-to :entanglement-bus :target c0_anchor)
+    (qurq/spawn-macro-cell :C7 :connect-to :entanglement-bus :target c0_anchor)
+    (qurq/assign out c0_anchor)))
