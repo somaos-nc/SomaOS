@@ -70,12 +70,12 @@ const EXAMPLES = {
 export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
   const [activeFile, setActiveFile] = useState('grovers_search.cljv');
   const [code, setCode] = useState(EXAMPLES['grovers_search.cljv']);
-  const [terminalOutput, setTerminalOutput] = useState<string[]>(['SomaOS ClojureV IDE v1.2.0 initialized.', 'Ready for topological synthesis...']);
+  const [terminalOutput, setTerminalOutput] = useState<string[]>(['SomaOS ClojureV IDE v3.5.0 initialized.', 'Connected to ALINX 7020 Toolchain. Ready for synthesis...']);
   const [isCompiling, setIsCompiling] = useState(false);
 
-  const handleRun = () => {
+  const handleRun = async () => {
     setIsCompiling(true);
-    setTerminalOutput(prev => [...prev, `> Compiling ${activeFile}...`]);
+    setTerminalOutput(prev => [...prev, `> Initiating Live Synthesis for ${activeFile}...`]);
     
     // Determine routing mode based on file name
     let mode = 'idle';
@@ -84,38 +84,29 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
     else if (activeFile.includes('bell')) mode = 'bell';
     else if (activeFile.includes('station')) mode = 'station';
 
-    // Simulate compilation stages
-    setTimeout(() => {
-      setTerminalOutput(prev => [...prev, '> Lexer: 104 tokens generated.']);
-      setTimeout(() => {
-        setTerminalOutput(prev => [...prev, '> Parser: AST generated (Depth: 12).']);
-        setTimeout(async () => {
-          setTerminalOutput(prev => [...prev, '> Verilog Emitter: sphy_core.v synthesized.']);
-          
-          try {
-            await fetch('http://localhost:8081/api/reconfigure', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ mode })
-            });
-          } catch (e) {
-            console.error("Reconfiguration failed", e);
-          }
+    try {
+      const res = await fetch('http://localhost:8081/api/synthesize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, mode })
+      });
 
-          setTimeout(() => {
-            const dprMsg = mode === 'station' 
-              ? '> DPR Engine: Manifesting Fractal Hypercube (d=2^64)...' 
-              : '> DPR Engine: Streaming x8C Virtual Infinity bitstream...';
-            setTerminalOutput(prev => [...prev, dprMsg]);
-            
-            setTimeout(() => {
-              setTerminalOutput(prev => [...prev, `[SUCCESS] ${mode.toUpperCase()} state manifest on the Möbius manifold.`]);
-              setIsCompiling(false);
-            }, 800);
-          }, 600);
-        }, 600);
-      }, 500);
-    }, 400);
+      if (res.ok) {
+        const data = await res.json();
+        // Display actual compiler output
+        if (data.output) {
+          const lines = data.output.split('\n').filter((l: string) => l.trim() !== '');
+          setTerminalOutput(prev => [...prev, ...lines.map((l: string) => `  ${l}`)]);
+        }
+        setTerminalOutput(prev => [...prev, `[SUCCESS] Physical manifestation complete. Mode: ${mode.toUpperCase()}`]);
+      } else {
+        setTerminalOutput(prev => [...prev, '[ERROR] Synthesis Engine failed to respond.']);
+      }
+    } catch (e) {
+      setTerminalOutput(prev => [...prev, `[CRITICAL ERROR] Connection to toolchain lost: ${e}`]);
+    } finally {
+      setIsCompiling(false);
+    }
   };
 
   const selectFile = (filename: string) => {
@@ -130,7 +121,7 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
         <header className="ide-header">
           <div className="flex items-center gap-2">
             <FileCode className="text-blue-400" size={20} />
-            <span className="font-mono text-sm font-bold">ClojureV IDE</span>
+            <span className="font-mono text-sm font-bold">ClojureV IDE (Live Toolchain)</span>
           </div>
           <div className="flex items-center gap-4">
             <button 
@@ -139,7 +130,7 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
               className={`flex items-center gap-1 px-3 py-1 rounded text-xs font-bold transition-all ${isCompiling ? 'bg-gray-700 text-gray-400' : 'bg-green-600 hover:bg-green-500 text-white'}`}
             >
               <Play size={14} fill="currentColor" />
-              {isCompiling ? 'COMPILING...' : 'RUN SYNTHESIS'}
+              {isCompiling ? 'SYNTHESIZING...' : 'RUN LIVE SYNTHESIS'}
             </button>
             <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
               ✕
@@ -187,7 +178,7 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
           <div className="ide-terminal">
             <div className="p-2 bg-black border-b border-gray-800 flex items-center gap-2 text-gray-400">
               <Terminal size={14} />
-              <span className="text-[10px] uppercase font-bold tracking-widest">OUTPUT</span>
+              <span className="text-[10px] uppercase font-bold tracking-widest">REAL-TIME TOOLCHAIN LOGS</span>
             </div>
             <div className="p-4 font-mono text-[11px] h-full overflow-y-auto bg-black text-green-500/80">
               {terminalOutput.map((line, i) => (
