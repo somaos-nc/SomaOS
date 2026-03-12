@@ -69,6 +69,10 @@ class HardwareState {
   final double phaseField;
   final int activeCells;
   final String routingMode;
+  final int windingNumber;
+  final double decoherenceRate;
+  final double compensationVector;
+  final double fidelity;
 
   HardwareState({
     required this.register,
@@ -76,6 +80,10 @@ class HardwareState {
     required this.phaseField,
     required this.activeCells,
     required this.routingMode,
+    required this.windingNumber,
+    required this.decoherenceRate,
+    required this.compensationVector,
+    required this.fidelity,
   });
 
   factory HardwareState.fromJson(Map<String, dynamic> json) {
@@ -85,6 +93,10 @@ class HardwareState {
       phaseField: (json['phase_field'] ?? 0).toDouble(),
       activeCells: json['active_cells'] ?? 8,
       routingMode: json['routing_mode'] ?? 'idle',
+      windingNumber: json['winding_number'] ?? 0,
+      decoherenceRate: (json['decoherence_rate'] ?? 0).toDouble(),
+      compensationVector: (json['compensation_vector'] ?? 0).toDouble(),
+      fidelity: (json['fidelity'] ?? 1.0).toDouble(),
     );
   }
 }
@@ -102,6 +114,10 @@ class _DashboardPageState extends State<DashboardPage> {
     phaseField: 0.0,
     activeCells: 8,
     routingMode: 'idle',
+    windingNumber: 0,
+    decoherenceRate: 0.0,
+    compensationVector: 0.0,
+    fidelity: 1.0,
   );
   Timer? _timer;
   bool _isIdeOpen = false;
@@ -144,7 +160,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Row(
             children: [
               Container(
-                width: 300,
+                width: 350, // Expanded width for scientific data
                 color: const Color(0xFF0F1423),
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -155,10 +171,25 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     const SizedBox(height: 10),
                     const Text('HPQC VIRTUALIZATION', style: TextStyle(fontSize: 10, letterSpacing: 2, color: Colors.grey)),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 20),
+                    
+                    const Text('ENVIRONMENTAL', style: TextStyle(fontSize: 10, color: Colors.cyan, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
                     _buildStatCard('XADC Thermal', '${_state.thermalLoad.toStringAsFixed(2)} °C', Icons.thermostat, Colors.red),
-                    _buildStatCard('SPHY Phase', 'Φ ${_state.phaseField.toStringAsFixed(3)}', Icons.radio, Colors.green),
-                    _buildStatCard('Topology', 'd=2^${_state.activeCells}', Icons.memory, Colors.blue),
+                    _buildStatCard('Decoherence (ΔS)', '${(_state.decoherenceRate * 100).toStringAsFixed(3)}% / ms', Icons.blur_linear, Colors.deepOrangeAccent),
+                    
+                    const SizedBox(height: 20),
+                    const Text('TOPOLOGICAL MANIFOLD', style: TextStyle(fontSize: 10, color: Colors.cyan, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
+                    _buildStatCard('Winding Number (W)', '${_state.windingNumber}', Icons.all_inclusive, Colors.purpleAccent),
+                    _buildStatCard('Fidelity (F)', '${(_state.fidelity * 100).toStringAsFixed(2)}%', Icons.check_circle_outline, Colors.greenAccent),
+                    
+                    const SizedBox(height: 20),
+                    const Text('SPHY ENGINE', style: TextStyle(fontSize: 10, color: Colors.cyan, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
+                    _buildStatCard('Phase Field (Φ)', '${_state.phaseField.toStringAsFixed(3)} rad', Icons.radio, Colors.green),
+                    _buildStatCard('Injection (Ψ_SC)', '${_state.compensationVector.toStringAsFixed(4)} rad', Icons.bolt, Colors.amberAccent),
+
                     const Spacer(),
                     ElevatedButton.icon(
                       onPressed: () {
