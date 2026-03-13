@@ -77,15 +77,15 @@ func (s *Server) handleSynthesize(w http.ResponseWriter, r *http.Request) {
 
 	// 2. Run the actual Go transpiler
 	// We assume we are running from the project root or SomaServer dir
-	// We'll use absolute paths for the tools
 	wd, _ := os.Getwd()
 	projectRoot := filepath.Dir(wd)
-	compilerPath := filepath.Join(projectRoot, "ClojureV", "toolchain", "go", "cmd", "clojurev", "main.go")
+	toolchainDir := filepath.Join(projectRoot, "ClojureV", "toolchain", "go")
 	outputVerilog := filepath.Join(projectRoot, "build", "rtl", "sphy_core.v")
 
 	fmt.Printf("[SYNTHESIS] Compiling %s to %s...\n", tmpFile, outputVerilog)
 	
-	cmd := exec.Command("go", "run", compilerPath, "-target=verilog", "-in="+tmpFile, "-out="+outputVerilog)
+	cmd := exec.Command("go", "run", "./cmd/clojurev/main.go", "-target=verilog", "-in="+tmpFile, "-out="+outputVerilog)
+	cmd.Dir = toolchainDir
 	output, err := cmd.CombinedOutput()
 
 	// 3. Trigger physical hardware reset and routing update
