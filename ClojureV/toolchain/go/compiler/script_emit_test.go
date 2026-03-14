@@ -27,7 +27,7 @@ func TestScriptEmitters(t *testing.T) {
 	if err != nil {
 		t.Fatalf("EmitJS failed: %v", err)
 	}
-	if !strings.Contains(js, "function quantum_mock(in)") {
+	if !strings.Contains(js, "export function quantum_mock(in)") {
 		t.Errorf("JS output missing function definition")
 	}
 

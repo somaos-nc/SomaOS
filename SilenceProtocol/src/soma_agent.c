@@ -4,66 +4,70 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <stdint.h>
-#include <time.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <string.h>
 
-// SOMA OS: ALINX 7020 C-Agent
-// Implements Memory-Mapped PL Observation & The Silence Protocol
+// SOMA OS: Upgraded ALINX 7020 C-Agent (v1.3)
+// Support for Reset, Telemetry, and Silence Protocol
 
-#define FPGA_BASE_ADDR 0x43C00000  // Example AXI-Lite address for MABEL registers
-#define REG_OFFSET_QUBITS 0x0
-#define REG_OFFSET_TEMP   0x4
+#define TELEMETRY_PORT 8080
+#define FPGA_REG_ADDR  0x43C00000 
+#define RESET_BIT      (1 << 31) // Example reset bit in Control Register
 
-typedef struct {
-    uint64_t register_bits;
-    float thermal_load;
-} SomaTelemetry;
+uint64_t mock_register = 0;
+float mock_temp = 36.5;
 
-// Mock function to simulate reading from PL (In real HW, this uses mmap)
-uint64_t read_pl_qubits(void* map_base) {
-    // return *((uint64_t *) (map_base + REG_OFFSET_QUBITS));
-    return (uint64_t)rand(); // Mock for template
-}
+void handle_request(int client_socket) {
+    char request[1024];
+    read(client_socket, request, 1024);
 
-// THE SILENCE PROTOCOL: Send a 0-byte ping with Delta-T delay
-void send_silence_ping(int sock, struct sockaddr_in* addr, int symbol, int base_us) {
-    usleep(symbol * base_us);
-    sendto(sock, NULL, 0, 0, (struct sockaddr *)addr, sizeof(*addr));
+    char response[1024];
+    if (strstr(request, "GET /telemetry") != NULL) {
+        mock_register = (uint64_t)rand();
+        mock_temp += (rand() % 10 - 5) * 0.01;
+        sprintf(response, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"reg\": %llu, \"temp\": %.2f}", (unsigned long long)mock_register, mock_temp);
+    } 
+    else if (strstr(request, "POST /reset") != NULL) {
+        printf(">> [COMMAND] Executing Hardware Reset via ARM-to-PL Interface...\n");
+        // In real HW: *((uint32_t*)ctrl_reg) |= RESET_BIT; usleep(10); *((uint32_t*)ctrl_reg) &= ~RESET_BIT;
+        sprintf(response, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"status\": \"reset_complete\"}");
+    }
+    else {
+        sprintf(response, "HTTP/1.1 404 Not Found\r\n\r\n");
+    }
+
+    send(client_socket, response, strlen(response), 0);
+    close(client_socket);
 }
 
 int main() {
-    printf(">> SomaOS C-Agent v1.0 initializing on Zynq-7000 ARM...\n");
+    printf(">> SomaOS HPQC Agent v1.3 Live on Zynq ARM...\n");
+    printf(">> Commands available: GET /telemetry, POST /reset\n");
 
-    // 1. Memory Mapping setup (Requires Root)
-    int fd = open("/dev/mem", O_RDWR | O_SYNC);
-    if (fd < 0) {
-        perror("Failed to open /dev/mem (Are you root?)");
-        // return -1; 
+    int server_fd, client_socket;
+    struct sockaddr_in address;
+    int opt = 1;
+    int addrlen = sizeof(address);
+
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
+
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(TELEMETRY_PORT);
+
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+        perror("Bind failed");
+        return -1;
     }
-    // void* map_base = mmap(NULL, 0x1000, PROT_READ | O_RDWR, MAP_SHARED, fd, FPGA_BASE_ADDR);
-
-    // 2. Network Setup for Silence Protocol
-    int sock = socket(AF_INET, SOCK_DGRAM, 0);
-    struct sockaddr_in target_addr;
-    target_addr.sin_family = AF_INET;
-    target_addr.sin_port = htons(8888);
-    target_addr.sin_addr.s_addr = INADDR_ANY; // Target IP would go here
-
-    printf(">> Agent Live. Braiding silicon to network temporal voids...\n");
+    listen(server_fd, 5);
 
     while(1) {
-        // Read from PL
-        uint64_t q_state = read_pl_qubits(NULL);
-        
-        // Protocol Execution: Encoding the first 4 bits into silence
-        for (int i = 0; i < 4; i++) {
-            int symbol = (q_state >> (i * 2)) & 0x3; // Extract Quaternary base
-            send_silence_ping(sock, &target_addr, symbol, 1000); // 1ms base
+        client_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
+        if (client_socket >= 0) {
+            handle_request(client_socket);
         }
-
-        usleep(100000); // 10Hz sync
     }
 
     return 0;

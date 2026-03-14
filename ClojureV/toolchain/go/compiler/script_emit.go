@@ -11,7 +11,7 @@ func EmitJS(ast *parser.Program) (string, error) {
 
         for _, node := range ast.Body {
                 if defn, ok := node.(*parser.Defn); ok {
-                        sb.WriteString(fmt.Sprintf("export function %s(in) {\n  // Translated from ClojureV AST\n  return in;\n}\n", strings.ReplaceAll(defn.Name, "-", "_")))
+                        sb.WriteString(fmt.Sprintf("export function %s(input_flux) {\n  // Translated from ClojureV AST\n  return input_flux;\n}\n", strings.ReplaceAll(defn.Name, "-", "_")))
                 }
         }
 
@@ -23,7 +23,7 @@ func EmitPython(ast *parser.Program) (string, error) {
 
         for _, node := range ast.Body {
                 if defn, ok := node.(*parser.Defn); ok {
-                        sb.WriteString(fmt.Sprintf("def %s(in):\n    # Translated from ClojureV AST\n    return in\n", strings.ReplaceAll(defn.Name, "-", "_")))
+                        sb.WriteString(fmt.Sprintf("def %s(input_flux):\n    # Translated from ClojureV AST\n    return input_flux\n", strings.ReplaceAll(defn.Name, "-", "_")))
                 }
         }
 
@@ -36,8 +36,7 @@ func EmitWasm(ast *parser.Program) (string, error) {
         for _, node := range ast.Body {
                 if defn, ok := node.(*parser.Defn); ok {
                         name := strings.ReplaceAll(defn.Name, "-", "_")
-                        sb.WriteString("#include <emscripten.h>\n\n")
-                        sb.WriteString(fmt.Sprintf("EMSCRIPTEN_KEEPALIVE\nint %s(int in) {\n  // Translated from ClojureV AST\n  return in;\n}\n", name))
+                        sb.WriteString(fmt.Sprintf("(module\n  (func $%s\n    i32.xor\n  )\n  (export \"manifest\" (func $%s))\n)\n", name, name))
                 }
         }
 
