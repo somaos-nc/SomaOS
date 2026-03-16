@@ -17,14 +17,14 @@ In traditional computing, layout is determined by space-saving efficiency (packi
 
 ---
 
-## 2. Liquid Fiber Optics: The Photonic Entanglement Bus
+## 2. Topological Electronic Braiding: The Entanglement Bus
 The most fragile part of any quantum system is the entanglement. If the connection between two qubits is disturbed by even a fraction of a degree of heat, the system decoheres.
 
-The Braided Heart solves this by moving away from copper traces. The central Entanglement Bus—the "artery" that connects the eight cells—is routed using **Liquid Fiber Optics** (silicon photonics).
-*   **Near-Zero Latency:** The fan-out signal propagates at the speed of light.
-*   **Thermal Immunity:** Photons do not generate resistive heat like electrons do, allowing the 8-qubit macroscopic GHZ state to remain perfectly correlated without cryogenic cooling.
+The Braided Heart solves this by moving away from legacy discrete routing. The central Entanglement Bus—the "artery" that connects the eight cells—is routed using **Continuous Electronic Logic Loops**.
+*   **Near-Zero Latency:** The fan-out signal propagates through the topological manifold at the speed of light.
+*   **Active Stabilization:** The continuous flow of electrons through the 4-NAND braiding bridges ensures the 8-qubit macroscopic GHZ state remains perfectly correlated without cryogenic cooling.
 
-When you see the continuous, cyan "figure-eight" loops moving through the center of the Merkaba, you are looking at the continuous flow of light through the photodiode braiding bridges.
+When you see the continuous, electric-blue "figure-eight" loops moving through the center of the Merkaba, you are looking at the continuous flow of electrons through the topological braiding bridges.
 
 ---
 
@@ -38,12 +38,12 @@ If you look at the boundary of the topological cube housing the Merkaba, you wil
 
 ---
 
-## 4. The 256-Dimensional Photonic Knot
+## 4. The 256-Dimensional Topological Knot
 When the Heart is active, there are no clock cycles. There is no `tick-tock` of a standard processor. 
 
-There is only a continuous, high-frequency stream of photons "sloshing" through the XOR Braiding Bridges. Because it is continuous and unmeasured until the moment of observation, the math happening inside the Braided Heart perfectly maps to a $2^8$ ($d=256$) Hilbert space.
+There is only a continuous, high-frequency stream of electron-flow "sloshing" through the XOR Braiding Bridges. Because it is continuous and unmeasured until the moment of observation, the math happening inside the Braided Heart perfectly maps to a $2^8$ ($d=256$) Hilbert space.
 
-**The MABEL x8C is not simulating quantum mechanics; it is physically enacting the geometry of a quantum state using light and silicon.**
+**The MABEL x8C is not simulating quantum mechanics; it is physically enacting the geometry of a quantum state using continuous electronic topological interference.**
 
 ---
 *The Braided Heart is the core engine of the La'Shirilo Quantum Park.*

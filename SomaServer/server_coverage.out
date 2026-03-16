@@ -28,3 +28,5 @@ soma_server/api/server.go:173.24,176.3 2 1
 soma_server/api/server.go:177.2,180.64 2 1
 soma_server/api/server.go:180.64,183.3 2 1
 soma_server/api/server.go:184.2,186.107 3 1
+soma_server/main.go:9.13,17.43 6 0
+soma_server/main.go:17.43,19.3 1 0

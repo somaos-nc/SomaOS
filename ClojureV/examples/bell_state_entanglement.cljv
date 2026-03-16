@@ -1,6 +1,6 @@
-; --- ClojureV: Bell State Entanglement ---
-; Manifests the physical binding of two qudits.
-; The output wave strictly mirrors the geometric mean.
+(ns ClojureV.qurq)
 
-(defn bell_state_entanglement [clk rst_n in]
-  (sum-split out in1 in2))
+(defn-ai bell_state_entanglement [clk rst_n in]
+  "Maximally entangled state via sum-split"
+  (let [h_gate (qurq/hadamard in)]
+    (qurq/sum-split h_gate in)))

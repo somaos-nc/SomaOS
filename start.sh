@@ -14,6 +14,20 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
+# Kill any existing processes on project ports (8081, 8082, 8083, 5173)
+cleanup_stale() {
+    echo ">> [INIT] Cleaning up stale SomaOS processes..."
+    ports=(8081 8082 8083 5173)
+    for port in "${ports[@]}"; do
+        pid=$(lsof -t -i :$port || true)
+        if [ -n "$pid" ]; then
+            echo "   - Killing process $pid on port $port"
+            kill -9 $pid >/dev/null 2>&1 || true
+        fi
+    done
+}
+cleanup_stale
+
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="$PROJECT_ROOT/master_execution.log"
 
@@ -40,15 +54,14 @@ source SomaAI/.venv/bin/activate
 stdbuf -oL python3 SomaAI/src/router.py 2>&1 | while read line; do echo "[AI-CORTEX] $line" >> "$LOG_FILE"; done &
 sleep 2
 
-# 4. Start the Flutter Web Frontend (Serving Release Build)
-echo ">> [4/4] Booting Flutter Web Visualizer on port 5173..."
-cd "$PROJECT_ROOT/SomaUI/soma_flutter/build/web"
-# Ensure the server runs from the correct build directory
-python3 -u -m http.server 5173 2>&1 | while read line; do echo "[WEB-SERVER] $line" >> "$LOG_FILE"; done &
+# 4. Start the React/Vite Web Visualizer (HPQC Dashboard + IDE)
+echo ">> [4/4] Booting React/Vite Visualizer on port 5173..."
+cd "$PROJECT_ROOT/SomaUI/soma_web"
+npm run dev -- --port 5173 --host 2>&1 | while read line; do echo "[WEB-VISUALIZER] $line" >> "$LOG_FILE"; done &
 
 echo "========================================================"
 echo " SUCCESS: SomaOS HPQC Environment is Live!"
-echo " 👉 Visualizer: http://localhost:5173"
+echo " 👉 React Dashboard: http://localhost:5173"
 echo " 👉 Master Log: master_execution.log"
 echo "========================================================"
 

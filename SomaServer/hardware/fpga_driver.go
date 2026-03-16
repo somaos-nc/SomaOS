@@ -1,8 +1,10 @@
 package hardware
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math"
 	"math/rand"
 	"net/http"
 	"time"
@@ -17,10 +19,14 @@ type FPGADriver struct {
 	IsStation   bool
 	LiveMode    bool
 	BoardIP     string
+	Manifold    string
 
 	// Advanced Scientific Telemetry
 	WindingNumber int64
 	BaseTemp      float64
+	
+	// Internal State
+	lastPollSuccess bool
 }
 
 func NewFPGADriver() *FPGADriver {
@@ -33,6 +39,7 @@ func NewFPGADriver() *FPGADriver {
 		BoardIP:       "10.100.102.9",
 		WindingNumber: 0,
 		BaseTemp:      36.5,
+		lastPollSuccess: false,
 	}
 }
 
@@ -68,6 +75,7 @@ func (f *FPGADriver) Poll() {
 	if f.LiveMode {
 		f.pollLiveBoard()
 	} else {
+		f.lastPollSuccess = false
 		f.pollSimulation()
 	}
 }
@@ -95,12 +103,20 @@ func (f *FPGADriver) pollSimulation() {
 			f.Register = 0
 		}
 	}
+	
+	// Mock manifold for simulation
+	if f.Manifold == "" || rand.Float64() > 0.9 {
+		buf := make([]byte, 128)
+		rand.Read(buf)
+		f.Manifold = hex.EncodeToString(buf)
+	}
 }
 
 func (f *FPGADriver) pollLiveBoard() {
 	client := http.Client{Timeout: 50 * time.Millisecond}
 	resp, err := client.Get(fmt.Sprintf("http://%s:8080/telemetry", f.BoardIP))
 	if err != nil {
+		f.lastPollSuccess = false
 		// Fallback to simulation if board is unreachable to keep UI alive
 		f.pollSimulation()
 		return
@@ -110,15 +126,20 @@ func (f *FPGADriver) pollLiveBoard() {
 	var boardData struct {
 		Register uint64  `json:"reg"`
 		Temp     float64 `json:"temp"`
+		Manifold string  `json:"manifold"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&boardData); err == nil {
+		f.lastPollSuccess = true
 		f.Register = boardData.Register
 		f.BaseTemp = boardData.Temp
+		f.Manifold = boardData.Manifold
 		f.Phase += 0.15
 		if f.Phase > 6.28318 {
 			f.Phase = 0.0
 			f.WindingNumber++
 		}
+	} else {
+		f.lastPollSuccess = false
 	}
 }
 
@@ -136,19 +157,41 @@ func (f *FPGADriver) GetHardwareData() HardwareState {
 	thermalLoad := f.BaseTemp + (rand.Float64() * 0.5)
 	
 	// Entropy / Decoherence Rate (∆S)
-	// Higher temp = higher entropy. Idle mode has higher natural entropy than locked states.
 	baseDecoherence := 0.02 + ((thermalLoad - 35.0) * 0.01)
 	if f.RoutingMode == "idle" { baseDecoherence += 0.05 }
 	decoherenceRate := baseDecoherence + (rand.Float64() * 0.01)
 
 	// SPHY Compensation Vector (Ψ_SC)
-	// Must dynamically mirror and invert the decoherence to stabilize
 	compensationVector := -(decoherenceRate * 1.5)
 
 	// Entanglement Fidelity (F)
-	// 1.0 (100%) minus the uncompensated thermal noise
 	fidelity := 1.0 - (decoherenceRate * 0.1 * rand.Float64())
-	if fidelity > 0.999 { fidelity = 1.0 } // Snap to perfect if close
+	if fidelity > 0.999 { fidelity = 1.0 }
+
+	// Topological Manifold Diagnostics Implementation
+	entropy := 0.0
+	histogram := make(map[string]int)
+	if f.Manifold != "" {
+		bytes, err := hex.DecodeString(f.Manifold)
+		if err == nil && len(bytes) > 0 {
+			counts := make(map[byte]int)
+			for _, b := range bytes {
+				counts[b]++
+				bin := fmt.Sprintf("%02x", b)
+				histogram[bin]++
+			}
+			// Calculate Shannon Entropy: H(X) = -sum(p(x) log2 p(x))
+			for _, count := range counts {
+				p := float64(count) / float64(len(bytes))
+				entropy -= p * math.Log2(p)
+			}
+		}
+	} else {
+		entropy = 7.5 + rand.Float64()*0.5
+	}
+
+	// Coherence Time (T2) approximation
+	coherenceTime := 1.0 / (decoherenceRate + 0.0001)
 
 	return HardwareState{
 		Register:           f.Register,
@@ -161,19 +204,29 @@ func (f *FPGADriver) GetHardwareData() HardwareState {
 		DecoherenceRate:    decoherenceRate,
 		CompensationVector: compensationVector,
 		Fidelity:           fidelity,
+		Manifold:           f.Manifold,
+		ShannonEntropy:     entropy,
+		CoherenceTime:      coherenceTime,
+		StateHistogram:     histogram,
+		HardwareConnected:  f.lastPollSuccess,
 	}
 }
 
-// HardwareState represents the telemetry payload sent to the Flutter UI
+// HardwareState represents the telemetry payload
 type HardwareState struct {
-	Register           uint64  `json:"register"`
-	ThermalLoad        float64 `json:"thermal_load"`
-	PhaseField         float64 `json:"phase_field"`
-	ActiveCells        int     `json:"active_cells"`
-	RoutingMode        string  `json:"routing_mode"`
-	LiveMode           bool    `json:"live_mode"`
-	WindingNumber      int64   `json:"winding_number"`
-	DecoherenceRate    float64 `json:"decoherence_rate"`
-	CompensationVector float64 `json:"compensation_vector"`
-	Fidelity           float64 `json:"fidelity"`
+	Register           uint64         `json:"register"`
+	ThermalLoad        float64        `json:"thermal_load"`
+	PhaseField         float64        `json:"phase_field"`
+	ActiveCells        int            `json:"active_cells"`
+	RoutingMode        string         `json:"routing_mode"`
+	LiveMode           bool           `json:"live_mode"`
+	WindingNumber      int64          `json:"winding_number"`
+	DecoherenceRate    float64        `json:"decoherence_rate"`
+	CompensationVector float64        `json:"compensation_vector"`
+	Fidelity           float64        `json:"fidelity"`
+	Manifold           string         `json:"manifold"`
+	ShannonEntropy     float64        `json:"shannon_entropy"`
+	CoherenceTime      float64        `json:"coherence_time"`
+	StateHistogram     map[string]int `json:"state_histogram"`
+	HardwareConnected  bool           `json:"hardware_connected"`
 }

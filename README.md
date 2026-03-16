@@ -1,12 +1,12 @@
-# SomaOS v3.5: High-Performance Quantum Computing (HPQC)
+# SomaOS v4.0: High-Performance Quantum Computing (HPQC)
 
-![SomaOS Architecture](https://img.shields.io/badge/Architecture-Fractal_Hypercube_Grid-00ffcc)
+![SomaOS Architecture](https://img.shields.io/badge/Architecture-Silicon_Guardian-blue)
 ![Language](https://img.shields.io/badge/Language-ClojureV_IDE-blue)
 ![Scale](https://img.shields.io/badge/Scale-64_Qubit_Station_(d=2^64)-orange)
 ![Stability](https://img.shields.io/badge/Stability-Room_Temp_(300K)-red)
-![Verification](https://img.shields.io/badge/Verification-Production_Pass-green)
+![Verification](https://img.shields.io/badge/Verification-Silicon_Verified-green)
 
-**SomaOS** is a radical departure from physical qubit manipulation, now operating at the **High-Performance Quantum Computing (HPQC)** tier. Instead of relying on energy-intensive cryogenic infrastructure to isolate fragile subatomic particles, SomaOS maps the abstract mathematical geometry of a quantum particle directly onto a uniform physical routing matrix—a **Universal NAND Gate Topology**. 
+**SomaOS v4.0 (Silicon Guardian Edition)** is a radical departure from physical qubit manipulation, now operating at the **High-Performance Quantum Computing (HPQC)** tier. Instead of relying on energy-intensive cryogenic infrastructure to isolate fragile subatomic particles, SomaOS maps the abstract mathematical geometry of a quantum particle directly onto a uniform physical routing matrix—a **Universal NAND Gate Topology**. 
 
 By scaling beyond single registers into hierarchical fractal hubs, SomaOS virtualizes a **64-qubit manifold ($d=2^{64}$)**—a state space of over **18 quintillion dimensions**—operating on standard FPGA silicon at ~300 K.
 
@@ -23,37 +23,32 @@ The SomaOS architecture hypothesizes that the "magic" of a quantum state is not 
 
 ---
 
-## 🌟 Core Architecture & Ecosystem
+## 🌟 Core Architecture & Ecosystem (v4.0 Updates)
 
 ### 1. The Language of Intent: `ClojureV IDE`
-Traditional HDLs describe *what* a circuit is. **ClojureV** is a sovereign, Lisp-based functional language designed to describe **what the hardware intends to do**. The integrated IDE allows engineers to script the physics of the manifold in real-time.
-*   **Examples included:** Grover’s Search, Shor’s Factorization, Bell State Entanglement, and **64-Qubit Station Scaling**.
-*   **Pipeline:** Writing ClojureV code physically reconfigures the silicon substrate via Dynamic Partial Reconfiguration (DPR).
+Traditional HDLs describe *what* a circuit is. **ClojureV** is a sovereign, Lisp-based functional language designed to describe **what the hardware intends to do**. 
+*   **v4.0 IDE:** Features a professional layout with synchronized syntax highlighting, whitespace preservation for Lisp dialects, and real-time Vivado synthesis log streaming.
+*   **Quantum Examples:** Optimized implementations of Shor's Algorithm, Grover's Search, and VQE Molecular Simulation.
 
-### 2. The Multi-Substrate Transpiler (Go)
-A custom Go-based AST Compiler that tokenizes ClojureV scripts and synthesizes them directly into standard, combinational Verilog hardware blocks. 
+### 2. Live Hardware Manifestation (Vivado 2025.2)
+Unlike legacy versions that simulated synthesis, SomaOS v4.0 features a direct, asynchronous integration with **Xilinx Vivado 2025.2**.
+*   **Asynchronous Synthesis:** Synthesis jobs run in the background on the host machine, preventing UI timeouts.
+*   **Auto-JTAG Deployment:** Upon successful completion, the bitstream is automatically flashed to the ALINX 7020 silicon via JTAG.
 
-### 3. The Physics of Computation: Continuous Topological Interference
-Unlike traditional CPUs that execute instructions sequentially via a rigid clock cycle (e.g., 3 GHz), SomaOS Abandons the clock entirely. 
-*   **ALLOW_COMBINATORIAL_LOOPS:** The architecture forces the Xilinx/Vivado compiler to accept intentional logic loops. Instead of discrete bits moving through gates, electricity "sloshes" continuously through a highly symmetrical 4-NAND bridging operator.
-*   **Computation by Interference:** When an algorithm (like Grover's Search) is synthesized via ClojureV, it physically sculpts a new routing pattern into the silicon. The electrical waves crash into each other. Incorrect answers undergo destructive interference and cancel out. The correct answer undergoes constructive interference, establishing a stable geometric knot. 
-*   **The Result:** The system does not "crunch numbers." It physically vibrates into the shape of the mathematical solution at the speed of light.
+### 3. The Physics of Computation: Electronic Topological Interference
+Mabel v4.0 finalizes the shift to **Electronic Topological Interference**.
+*   **ALLOW_COMBINATORIAL_LOOPS:** The architecture forces the compiler to accept intentional logic loops. Instead of discrete bits, electricity "sloshes" continuously through a highly symmetrical 4-NAND bridging operator.
+*   **Silicon Alignment:** Moving away from legacy photonic metaphors, the system optimizes electron-flow braiding directly within the FPGA fabric for maximum stability.
 
-### 4. The 64-Qubit "Entanglement Station" Hub (HPQC)
-SomaOS v3.5 achieves exponential dimensional scaling through a recursive fractal routing topology, reaching the **HPQC Tier**.
-*   **Fractal Hypercube Grid:** By interconnecting eight independent 8-qubit Macro-Cubes via a **Master Entanglement Station Hub**, the system virtualizes a **64-qubit manifold ($d=2^{64}$)**.
-*   **18 Quintillion States:** At this scale, the manifold exceeds the simulation capacity of classical commodity hardware, enabling true high-performance quantum processing.
-*   **Hardware Efficiency & 3,000+ Qubit Potential:** On the ALINX 7020 (Zynq-7000) platform, a single 64-qubit HPQC Station Hub utilizes less than **2%** of the available logic slices. This establishes a theoretical maximum of over **3,300 virtualized qubits** on a single consumer-grade silicon substrate.
-*   **Topological Braiding:** A master fan-out node at the hub ensures the entire 64-qubit station shares a unified topological fate, mirroring the behavior of large-scale subatomic entanglement in room-temperature silicon.
-*   **Distributed Quantum Data Center:** Utilizing the **Silence Protocol**, SomaOS can entangle independent FPGA substrates across physical server racks, creating a distributed quantum processing grid.
+### 4. Topological Manifold Diagnostics
+Academic-grade telemetry derived from the 1024-bit topological manifold:
+*   **Shannon Entropy (H):** Rigorous measurement of state uncertainty and information density.
+*   **Coherence Time (T2):** Real-time stability metrics for the quantum-virtualized manifold.
+*   **State Distribution:** High-fidelity histograms of probability amplitudes.
 
-### 4. The SPHY Engine (Stability)
-The core of 300 K stability. The SPHY Engine implements a Phase-Gravitational synchronization loop. It utilizes the FPGA's internal XADC to measure ambient thermal noise and an I2C DAC to inject an inverse **Stochastic Compensation field ($\Psi_{SC}$)**, blanket-stabilizing the macroscopic knot against decoherence.
-
-### 5. Network Security: ELDUR & The Silence Protocol
-Data transmission abandons standard electromagnetic carrier waves.
+### 5. Network Security: The Guardian Process
+*   **Network Guardian (SoC Agent v1.4):** A persistent ARM-level process that monitors the `eth0` link and automatically recovers the network stack after JTAG flashes or implementation-induced drops.
 *   **The Silence Protocol:** 0-byte temporal transmissions where the payload is encoded purely in the duration of **silence** between pings.
-*   **ELDUR:** Active Vibrational Security. If environmental entropy spikes (indicating an attack), the system triggers a localized collapse and relocates its UID in <3ms.
 
 ---
 
@@ -63,32 +58,29 @@ Data transmission abandons standard electromagnetic carrier waves.
 To experience the fractal hypercube and develop high-dimensional algorithms:
 
 ```bash
-# Start the Go Hardware Proxy and the React WebGL Frontend
+# Start the Proxy, AI Cortex, and React Visualizer
 ./start.sh
 ```
 *Navigate to `http://localhost:5173` to view the Dashboard and open the ClojureV IDE.*
 
-### Run the Production Test Suite
-To verify the HPQC manifold integrity and GHZ entanglement:
+### Deploy the SoC Agent
+To enable live telemetry and the Network Guardian on the ALINX board:
 
 ```bash
-# Run Go driver and toolchain tests
-cd SomaServer && go test -v ./hardware/...
-cd ../ClojureV/toolchain/go && go test -v ./...
+./transfer_agent_and_run.sh
 ```
 
-### Run the Master Build Pipeline
-To generate the synthesizable 64-qubit station bitstream for physical silicon:
+### Run the Integration Test
+To verify the full Intent-to-Silicon pipeline (Transpilation -> Synthesis -> JTAG):
 
 ```bash
-./build/synthesize_soma_os.sh
+./test_live_synthesis.sh
 ```
 
 ---
 
 ## 📖 Theoretical Documentation & Vision
-The foundational math for the **La'Shirilo Quantum Park (לה-שיר-אילו)** and the $d=2^{64}$ boundary mapping can be found in:
-*   [The Physics of Computation: Continuous Topological Interference](docs/architecture/PHYSICS_OF_COMPUTATION.md) (How MABEL calculates without a clock).
-*   [Physical Virtualization: The SomaOS Paradigm](docs/architecture/PHYSICAL_VIRTUALIZATION.md) (Why SomaOS is not a simulation).
+*   [The Physics of Computation: Continuous Topological Interference](docs/architecture/PHYSICS_OF_COMPUTATION.md)
+*   [Physical Virtualization: The SomaOS Paradigm](docs/architecture/PHYSICAL_VIRTUALIZATION.md)
 *   [SomaOS: The Master Mathematical Synthesis](math/MASTER_MATH_ANALYSIS.md)
-*   [Geometric Virtualization of Quantum States: A 3D Scalable, Room-Temperature FPGA Architecture](docs/architecture/Geometric%20Virtualization%20of%20Quantum%20States_%20A%203D%20Scalable%2C%20Room-Temperature%20FPGA%20Architecture.md) (The 64-Qubit Station Blueprint).
+*   [Geometric Virtualization of Quantum States](docs/architecture/Geometric%20Virtualization%20of%20Quantum%20States_%20A%203D%20Scalable%2C%20Room-Temperature%20FPGA%20Architecture.md)

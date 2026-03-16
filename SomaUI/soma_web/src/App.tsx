@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Dashboard } from './components/Dashboard'
 import { ClojureVIDE } from './components/ClojureVIDE'
+import { Wifi, WifiOff, AlertTriangle, Monitor } from 'lucide-react'
 import { TopologicalFlowWindow } from './components/TopologicalFlowWindow'
 
 export type HardwareState = {
@@ -10,6 +11,11 @@ export type HardwareState = {
   phase_field: number;
   active_cells: number;
   routing_mode: string;
+  manifold?: string;
+  shannon_entropy: number;
+  coherence_time: number;
+  state_histogram: Record<string, number>;
+  hardware_connected: bool;
 };
 
 function App() {
@@ -18,7 +24,11 @@ function App() {
     thermal_load: 35.0,
     phase_field: 0.0,
     active_cells: 8,
-    routing_mode: 'idle'
+    routing_mode: 'idle',
+    shannon_entropy: 0,
+    coherence_time: 0,
+    state_histogram: {},
+    hardware_connected: false
   });
 
   const [isIdeOpen, setIsIdeOpen] = useState(false);
@@ -43,7 +53,22 @@ function App() {
 
   return (
     <div className="app-container">
-      <header className="header">
+      {!hwState.hardware_connected && (
+        <div className="connection-warning">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <WifiOff className="text-red-500 animate-pulse" size={24} />
+              <AlertTriangle className="absolute -top-2 -right-2 text-yellow-500" size={14} />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-red-400 font-bold text-[10px] uppercase tracking-widest">ALINX LINK FAILURE</span>
+              <span className="text-gray-500 text-[8px] uppercase font-bold">Simulating SPHY Manifold...</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <header className="app-header">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1>SomaOS</h1>
@@ -69,9 +94,6 @@ function App() {
       <main className="main-content">
         <Dashboard hwState={hwState} />
       </main>
-
-      {/* Floating Topological Flow Window (Persists over everything) */}
-      <TopologicalFlowWindow state={hwState} />
 
       {isIdeOpen && <ClojureVIDE onClose={() => setIsIdeOpen(false)} />}
     </div>

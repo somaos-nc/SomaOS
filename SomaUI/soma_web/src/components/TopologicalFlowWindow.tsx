@@ -4,7 +4,7 @@ import { Sphere, Line, Text, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { HardwareState } from '../App';
 
-const PhotonicFlow = ({ mode }: { mode: string }) => {
+const ElectronicFlow = ({ mode }: { mode: string }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const particleCount = 1500;
 
@@ -16,7 +16,7 @@ const PhotonicFlow = ({ mode }: { mode: string }) => {
       positions[i * 3] = (Math.random() - 0.5) * 4;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 4;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
-      velocities[i] = 0.02 + Math.random() * 0.08; // Photons move faster
+      velocities[i] = 0.05 + Math.random() * 0.1; // Electricity flow
     }
     return { positions, velocities };
   }, [mode]);
@@ -41,13 +41,6 @@ const PhotonicFlow = ({ mode }: { mode: string }) => {
         positions[idx] = Math.sin(time * freq + i) * 2;
         positions[idx + 1] = Math.cos(time * freq * 0.5 + i) * 2;
         positions[idx + 2] = (i / particleCount - 0.5) * 4;
-      } else if (mode === 'bell') {
-        // Torsional Entangled Flow
-        const r = 1.5;
-        const t = time * 4 + i * 0.01;
-        positions[idx] = r * Math.cos(t);
-        positions[idx + 1] = r * Math.sin(t);
-        positions[idx + 2] = (i % 2 === 0) ? Math.sin(t) : -Math.sin(t);
       } else if (mode === 'station') {
         // Master Station Hub: Fractal Star Burst
         const t = time * 2;
@@ -81,7 +74,7 @@ const PhotonicFlow = ({ mode }: { mode: string }) => {
       </bufferGeometry>
       <pointsMaterial
         size={0.06}
-        color={mode === 'idle' ? '#4a5568' : '#00ffff'} // Cyan/White Photonic glow
+        color={mode === 'idle' ? '#4a5568' : '#3b82f6'} // Electric Blue / Cobalt High Voltage
         transparent
         opacity={0.8}
         blending={THREE.AdditiveBlending}
@@ -94,7 +87,7 @@ export const TopologicalFlowWindow = ({ state }: { state: HardwareState }) => {
   return (
     <div className="flow-window">
       <div className="flow-window-header">
-        <span className="text-[10px] font-bold tracking-widest text-cyan-400 uppercase">
+        <span className="text-[10px] font-bold tracking-widest text-blue-400 uppercase">
           Silicon Routing: {state.routing_mode.toUpperCase()}
         </span>
       </div>
@@ -110,11 +103,11 @@ export const TopologicalFlowWindow = ({ state }: { state: HardwareState }) => {
               <meshBasicMaterial color="#1e293b" transparent opacity={0.3} />
             </mesh>
             
-            <PhotonicFlow mode={state.routing_mode} />
+            <ElectronicFlow mode={state.routing_mode} />
             
             {/* Legend Text */}
             <Text position={[0, -2.5, 0]} fontSize={0.2} color="#4b5563">
-              REAL-TIME PHOTONIC ENTANGLEMENT TRAFFICKING
+              REAL-TIME ELECTRONIC TOPOLOGICAL INTERFERENCE
             </Text>
           </Float>
         </Canvas>

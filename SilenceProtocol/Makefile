@@ -3,7 +3,7 @@
 
 CC = arm-linux-gnueabihf-gcc
 CFLAGS = -O2 -Wall
-LDFLAGS = -static
+LDFLAGS = -static -lpthread
 
 TARGET = soma_agent
 SRC = src/soma_agent.c

@@ -1,88 +1,133 @@
-import React, { useState } from 'react';
-import { FileCode, Play, Terminal, ChevronRight, Save, FolderOpen } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { FileCode, Play, Terminal, ChevronRight, Save, FolderOpen, Loader2 } from 'lucide-react';
 
 const EXAMPLES = {
-  'station_scaling.cljv': `(ns ClojureV.qurq)
+  'shors_algorithm.cljv': `(ns ClojureV.quantum)
 
-(defn-fractal HyperStation [clk rst_n in]
-  "Manifesting a 64-qubit Fractal Hypercube via the Master Station Hub"
-  (let [master_anchor (qurq/spawn-macro-cell :Station_Core :anchor true)
-        station_bus (qurq/spawn-station-bus master_anchor)]
-    
-    ;; Braiding 8 independent 8-qubit cubes into a unified manifold
-    (loop [cube_idx 0]
-      (if (< cube_idx 8)
-        (do
-          (qurq/spawn-macro-cube cube_idx :connect-to station_bus)
-          (recur (inc cube_idx)))))
-    
-    (qurq/assign out station_bus)))`,
+;; Solving Integer Factorization via Period Finding
+;; N = p * q. This algorithm provides exponential speedup over classical RSA.
 
-  'grovers_search.cljv': `(ns ClojureV.qurq)
+(defn-ai quantum-modular-exponentiation [clk rst_n base power modulus]
+  "Core of Shor's: calculates (base^power) mod modulus using topological interference."
+  (let [phi (qurq/phi-scale base)]
+    (qurq/mod-exp out phi power modulus)))
 
-(defn-ai grover_oracle [clk rst_n in]
-  (let [target 0xABCDEF]
-    (if (= in target)
-      (qurq/phi-scale out in -1.0)
-      (qurq/assign out in))))
+(defn-fractal shors-factorization [clk rst_n n]
+  (let [a (qurq/select-random-coprime n)
+        ;; Create superposition of all possible exponents
+        x (qurq/superposition 64) 
+        f_x (quantum-modular-exponentiation clk rst_n a x n)]
+    ;; Quantum Fourier Transform collapses the periodic state
+    (let [qft (qurq/qft f_x)]
+      (qurq/collapsed-period out qft))))`,
 
-(defn-ai grover_diffusion [clk rst_n in]
-  (let [mean (qurq/read-average in)]
-    (qurq/phi-scale out (- (* 2 mean) in))))
+  'grovers_search.cljv': `(ns ClojureV.quantum)
 
-(defn-fractal grovers_search [clk rst_n in]
-  (loop [depth 16 signal in]
-    (if (zero? depth)
+;; Searching an Unstructured Database of 2^64 elements.
+;; Classical: O(N) | Quantum: O(sqrt(N))
+
+(defn-ai oracle [clk rst_n signal target]
+  "Flips the phase of the target element"
+  (if (= signal target)
+    (qurq/phi-scale out signal -1.0)
+    (qurq/assign out signal)))
+
+(defn-ai diffusion-operator [clk rst_n signal]
+  "Inversion about the mean: amplifies the probability of the marked state"
+  (let [avg (qurq/read-average signal)]
+    (qurq/phi-scale out (- (* 2 avg) signal))))
+
+(defn-fractal grover-search [clk rst_n target]
+  (loop [iters 100 signal (qurq/superposition 64)]
+    (if (zero? iters)
       (qurq/assign out signal)
-      (let [marked (grover_oracle clk rst_n signal)]
-        (recur (dec depth) (grover_diffusion clk rst_n marked))))))`,
+      (let [marked (oracle clk rst_n signal target)]
+        (recur (dec iters) (diffusion-operator clk rst_n marked))))))`,
 
-  'shors_factorization.cljv': `(ns ClojureV.qurq)
+  'vqe_molecular_sim.cljv': `(ns ClojureV.quantum)
 
-(defn-ai modular_exponentiation [clk rst_n base exp mod]
-  (let [phi_base (qurq/phi-scale base)]
-    (qurq/mod-exp out phi_base exp mod)))
+;; Variational Quantum Eigensolver (VQE)
+;; Finding the ground state energy of a Hydrogen molecule (H2)
 
-(defn-fractal quantum_fourier_transform [clk rst_n in]
-  (loop [q_idx 0 data in]
-    (if (= q_idx 8)
-      (qurq/assign out data)
-      (let [h_gate (qurq/hadamard data q_idx)
-            cp_gate (qurq/controlled-phase h_gate q_idx)]
-        (recur (inc q_idx) cp_gate)))))
+(defn-ai ansatz-circuit [clk rst_n params]
+  "Parameterized quantum circuit representing the molecular wavefunction"
+  (let [q0 (qurq/hadamard 0)
+        q1 (qurq/rotation-z q0 (first params))]
+    (qurq/entangle q0 q1)))
 
-(defn-fractal shors_factorization [clk rst_n n]
-  (let [a (qurq/select-coprime n)
-        x (qurq/superposition 8)
-        f_x (modular_exponentiation clk rst_n a x n)]
-    (let [qft_result (quantum_fourier_transform clk rst_n f_x)]
-      (qurq/collapsed-period out qft_result))))`,
-
-  'bell_state_entanglement.cljv': `(ns ClojureV.qurq)
-
-(defn-ai BellState [clk rst_n in]
-  "Creating a maximally entangled state (Psi+) using a sum-split braid"
-  (let [h_gate (qurq/hadamard in)
-        cnot_gate (qurq/sum-split h_gate in)]
-    (qurq/assign out cnot_gate)))`
+(defn-fractal vqe-hydrogen-sim [clk rst_n initial-params]
+  (loop [params initial-params energy 100.0]
+    (let [wavefunction (ansatz-circuit clk rst_n params)
+          measured-e (qurq/measure-hamiltonian wavefunction :H2-Hamiltonian)]
+      (if (< measured-e 0.001) ;; Convergence check
+        (qurq/assign out energy)
+        (recur (qurq/optimize-params params measured-e) measured-e)))))`
 };
 
 export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
-  const [activeFile, setActiveFile] = useState('grovers_search.cljv');
-  const [code, setCode] = useState(EXAMPLES['grovers_search.cljv']);
-  const [terminalOutput, setTerminalOutput] = useState<string[]>(['SomaOS ClojureV IDE v3.5.0 initialized.', 'Connected to ALINX 7020 Toolchain. Ready for synthesis...']);
+  const [activeFile, setActiveFile] = useState('shors_algorithm.cljv');
+  const [code, setCode] = useState(EXAMPLES['shors_algorithm.cljv' as keyof typeof EXAMPLES]);
+  
+  const [terminalOutput, setTerminalOutput] = useState<string[]>(['SomaOS ClojureV IDE v4.0.0 initialized.', 'Connected to ALINX 7020 Toolchain. Ready for synthesis...']);
   const [isCompiling, setIsCompiling] = useState(false);
+  const [compilationStatus, setCompilationStatus] = useState('');
+
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const syncScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = e.currentTarget.scrollTop;
+      scrollRef.current.scrollLeft = e.currentTarget.scrollLeft;
+    }
+  };
+
+  const pollStatus = async (jobId: string, mode: string) => {
+    let lastLogLength = 0;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`http://localhost:8081/api/synthesize/status?id=${jobId}`);
+        if (res.ok) {
+          const job = await res.json();
+          
+          // Append new logs if any
+          const fullLogs = (job.output || '') + (job.vivado || '');
+          const lines = fullLogs.split('\n').filter((l: string) => l.trim() !== '');
+          if (lines.length > lastLogLength) {
+            setTerminalOutput(prev => [...prev, ...lines.slice(lastLogLength)]);
+            lastLogLength = lines.length;
+          }
+
+          if (job.status === 'success') {
+            clearInterval(interval);
+            setTerminalOutput(prev => [...prev, `[SUCCESS] Physical manifestation complete. Mode: ${mode.toUpperCase()}`]);
+            setIsCompiling(false);
+            setCompilationStatus('');
+          } else if (job.status === 'error') {
+            clearInterval(interval);
+            setTerminalOutput(prev => [...prev, '[ERROR] Hardware Synthesis Failed. Check Vivado logs above.']);
+            setIsCompiling(false);
+            setCompilationStatus('');
+          }
+        }
+      } catch (e) {
+        clearInterval(interval);
+        setTerminalOutput(prev => [...prev, `[CRITICAL ERROR] Lost connection to status endpoint: ${e}`]);
+        setIsCompiling(false);
+        setCompilationStatus('');
+      }
+    }, 1000);
+  };
 
   const handleRun = async () => {
     setIsCompiling(true);
+    setCompilationStatus('Initializing HPQC Toolchain...');
     setTerminalOutput(prev => [...prev, `> Initiating Live Synthesis for ${activeFile}...`]);
     
-    // Determine routing mode based on file name
     let mode = 'idle';
     if (activeFile.includes('grover')) mode = 'grover';
     else if (activeFile.includes('shor')) mode = 'shor';
-    else if (activeFile.includes('bell')) mode = 'bell';
-    else if (activeFile.includes('station')) mode = 'station';
+    else if (activeFile.includes('vqe')) mode = 'station';
 
     try {
       const res = await fetch('http://localhost:8081/api/synthesize', {
@@ -93,19 +138,18 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
 
       if (res.ok) {
         const data = await res.json();
-        // Display actual compiler output
-        if (data.output) {
-          const lines = data.output.split('\n').filter((l: string) => l.trim() !== '');
-          setTerminalOutput(prev => [...prev, ...lines.map((l: string) => `  ${l}`)]);
-        }
-        setTerminalOutput(prev => [...prev, `[SUCCESS] Physical manifestation complete. Mode: ${mode.toUpperCase()}`]);
+        setTerminalOutput(prev => [...prev, `> Synthesis Job Started: ${data.job_id}`]);
+        setCompilationStatus('Vivado Synthesis in Progress...');
+        pollStatus(data.job_id, mode);
       } else {
-        setTerminalOutput(prev => [...prev, '[ERROR] Synthesis Engine failed to respond.']);
+        setTerminalOutput(prev => [...prev, '[ERROR] Synthesis Engine failed to start job.']);
+        setIsCompiling(false);
+        setCompilationStatus('');
       }
     } catch (e) {
       setTerminalOutput(prev => [...prev, `[CRITICAL ERROR] Connection to toolchain lost: ${e}`]);
-    } finally {
       setIsCompiling(false);
+      setCompilationStatus('');
     }
   };
 
@@ -115,13 +159,35 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
     setTerminalOutput(prev => [...prev, `> Opened ${filename}`]);
   };
 
+  const renderHighlightedCode = (content: string, lang: string) => {
+    const lines = content.split('\n');
+    return lines.map((line, i) => {
+      let highlighted = line;
+      if (lang === 'cljv') {
+        highlighted = highlighted
+          .replace(/(\(|\)|\[|\])/g, '<span style="color: #94a3b8">$1</span>')
+          .replace(/(defn|defn-ai|defn-fractal|let|loop|if|recur|do|ns)/g, '<span style="color: #60a5fa">$1</span>')
+          .replace(/(qurq\/[a-z-]+)/g, '<span style="color: #2dd4bf">$1</span>')
+          .replace(/(:[a-z-]+)/g, '<span style="color: #fbbf24">$1</span>')
+          .replace(/(;;.*)/g, '<span style="color: #64748b">$1</span>');
+      }
+
+      return (
+        <div key={i} className="flex" style={{ whiteSpace: 'pre' }}>
+          <span className="w-8 text-gray-600 text-right pr-4 select-none" style={{ whiteSpace: 'pre' }}>{i + 1}</span>
+          <span dangerouslySetInnerHTML={{ __html: highlighted || '&nbsp;' }} />
+        </div>
+      );
+    });
+  };
+
   return (
     <div className="ide-overlay">
       <div className="ide-container">
         <header className="ide-header">
           <div className="flex items-center gap-2">
             <FileCode className="text-blue-400" size={20} />
-            <span className="font-mono text-sm font-bold">ClojureV IDE (Live Toolchain)</span>
+            <span className="font-mono text-sm font-bold">ClojureV IDE (HPQC Toolchain)</span>
           </div>
           <div className="flex items-center gap-4">
             <button 
@@ -130,7 +196,7 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
               className={`flex items-center gap-1 px-3 py-1 rounded text-xs font-bold transition-all ${isCompiling ? 'bg-gray-700 text-gray-400' : 'bg-green-600 hover:bg-green-500 text-white'}`}
             >
               <Play size={14} fill="currentColor" />
-              {isCompiling ? 'SYNTHESIZING...' : 'RUN LIVE SYNTHESIS'}
+              {isCompiling ? 'SYNTHESIZING...' : 'COMPILE & SYNTHESIZE'}
             </button>
             <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
               ✕
@@ -139,11 +205,10 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
         </header>
 
         <div className="ide-main">
-          {/* Sidebar */}
           <div className="ide-sidebar">
             <div className="p-2 border-b border-gray-800 flex items-center gap-2 text-gray-400">
               <FolderOpen size={14} />
-              <span className="text-[10px] uppercase font-bold tracking-widest">EXAMPLES</span>
+              <span className="text-[10px] uppercase font-bold tracking-widest">Quantum Algorithms</span>
             </div>
             <div className="py-2">
               {Object.keys(EXAMPLES).map(filename => (
@@ -153,36 +218,64 @@ export const ClojureVIDE = ({ onClose }: { onClose: () => void }) => {
                   className={`w-full text-left px-4 py-2 text-xs font-mono transition-colors flex items-center gap-2 ${activeFile === filename ? 'bg-blue-900/30 text-blue-400 border-l-2 border-blue-400' : 'text-gray-400 hover:bg-gray-800'}`}
                 >
                   <ChevronRight size={10} />
-                  {filename}
+                  {filename.replace('.cljv', '').replace(/_/g, ' ')}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Editor */}
-          <div className="ide-editor-container">
+          <div className="ide-editor-container relative">
+            {isCompiling && (
+              <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-4 transition-all">
+                <div className="relative">
+                  <Loader2 className="text-blue-500 animate-spin" size={48} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-ping"></div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-blue-400 font-bold text-sm tracking-widest uppercase animate-pulse">{compilationStatus}</span>
+                  <span className="text-gray-500 text-[10px] mt-1">Vivado Hardware Manifestation...</span>
+                </div>
+              </div>
+            )}
             <div className="ide-editor-tabs">
               <div className="active-tab">
                 {activeFile}
               </div>
             </div>
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              spellCheck={false}
-              className="ide-textarea"
-            />
+            
+            <div className="ide-editor-viewport">
+              <div className="ide-editor-content">
+                <div ref={scrollRef} className="ide-highlighter">
+                  {renderHighlightedCode(code, 'cljv')}
+                </div>
+                <textarea
+                  ref={textareaRef}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  onScroll={syncScroll}
+                  spellCheck={false}
+                  className="ide-textarea z-10"
+                  style={{ background: 'transparent', color: 'transparent', caretColor: 'white' }}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Terminal */}
           <div className="ide-terminal">
-            <div className="p-2 bg-black border-b border-gray-800 flex items-center gap-2 text-gray-400">
-              <Terminal size={14} />
-              <span className="text-[10px] uppercase font-bold tracking-widest">REAL-TIME TOOLCHAIN LOGS</span>
+            <div className="p-2 bg-black border-b border-gray-800 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-gray-400">
+                <Terminal size={14} />
+                <span className="text-[10px] uppercase font-bold tracking-widest">Vivado & Toolchain Logs</span>
+              </div>
+              <div className="text-[9px] text-gray-600 font-mono">
+                Xilinx Vivado v2025.2
+              </div>
             </div>
-            <div className="p-4 font-mono text-[11px] h-full overflow-y-auto bg-black text-green-500/80">
+            <div className="p-4 font-mono text-[11px] h-full overflow-y-auto bg-black text-blue-400/90">
               {terminalOutput.map((line, i) => (
-                <div key={i} className="mb-1">
+                <div key={i} className={`mb-1 ${line.includes('[ERROR]') || line.includes('[CRITICAL]') ? 'text-red-400' : line.includes('[SUCCESS]') || line.includes('[HW]') || line.includes('[JTAG]') ? 'text-green-400' : line.startsWith('  ') ? 'text-gray-400' : ''}`}>
                   {line}
                 </div>
               ))}
