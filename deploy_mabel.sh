@@ -1,28 +1,50 @@
 #!/bin/bash
-# SOMA OS: JTAG Deployment Script for ALINX 7020 (Zynq-7000)
+# SOMA OS: Professional Network-Safe Deployment Script (Zynq-7000)
 
-BITSTREAM_PATH="./build/mabel_x8c.bit"
+BIT_FILE="./build/mabel_x8c.bit"
+BIN_FILE="./build/mabel_x8c.bin"
+BOARD_IP="10.100.102.9"
+BOARD_USER="root"
+REMOTE_PATH="/root/mabel_x8c.bin"
 
 echo "========================================================"
 echo "    SomaOS: Deploying MABEL x8C to ALINX 7020...        "
 echo "========================================================"
 
-if [ ! -f "$BITSTREAM_PATH" ]; then
-    echo ">> [ERROR] Bitstream not found at $BITSTREAM_PATH"
-    echo ">> Please run ./build/synthesize_soma_os.sh first."
-    exit 1
-fi
+# 1. Convert .bit to raw .bin (strip header for xdevcfg)
+echo ">> Extracting raw bitstream from .bit header..."
+python3 -c "
+with open('$BIT_FILE', 'rb') as f:
+    data = f.read()
+    sync = b'\xaa\x99\x55\x66'
+    pos = data.find(sync)
+    if pos != -1:
+        with open('$BIN_FILE', 'wb') as out:
+            out.write(data[pos:])
+    else:
+        exit(1)
+" || (echo ">> [ERROR] Bitstream extraction failed." && exit 1)
 
-echo ">> Initializing JTAG connection to ALINX 7020..."
+# 2. Stop Agent to prevent AXI bus contention
+echo ">> Safeguarding PS: Stopping soma_agent..."
+ssh -o ConnectTimeout=5 "$BOARD_USER@$BOARD_IP" "pkill -9 soma_agent || true"
 
-# Using OpenOCD to flash the PL via USB-JTAG
-# Targets the Zynq-7000 tap
-# Note: Requires echo "[MOCK JTAG] Simulating OpenOCD flash..." # openocd installed and permissions for the USB device.
-echo "[MOCK JTAG] Simulating OpenOCD flash..." # openocd -f interface/ftdi/digilent-hs2.cfg -f target/zynq_7000.cfg -c "init; pld load 0 $BITSTREAM_PATH; exit"
+# 3. Transfer raw bitstream
+echo ">> Transferring raw bitstream to PS..."
+scp -o ConnectTimeout=5 "$BIN_FILE" "$BOARD_USER@$BOARD_IP:$REMOTE_PATH"
+
+# 4. Write to PL via internal bridge
+echo ">> Mapping silicon logic via xdevcfg (INTERNAL BRIDGE)..."
+ssh -o ConnectTimeout=5 "$BOARD_USER@$BOARD_IP" "cat $REMOTE_PATH > /dev/xdevcfg"
 
 if [ $? -eq 0 ]; then
     echo ">> [SUCCESS] MABEL x8C Braided Heart manifest on ALINX Silicon."
+    
+    # 5. Restart Agent
+    echo ">> Restoring telemetry services..."
+    ./transfer_agent_and_run.sh
+    echo ">> [NETWORK] Connection STABLE."
 else
-    echo ">> [ERROR] JTAG Deployment failed. Check USB connection and OpenOCD config."
+    echo ">> [ERROR] xdevcfg flash failed. Device might be locked."
     exit 1
 fi

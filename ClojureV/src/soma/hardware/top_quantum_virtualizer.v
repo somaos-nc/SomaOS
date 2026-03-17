@@ -10,7 +10,7 @@
 // Topological Entanglement Bus for macroscopic GHZ state virtualization.
 
 module top_quantum_virtualizer (
-    input wire CLK100MHZ,       // 100MHz System Clock
+    input wire CLK100MHZ,       // 100MHz Physical System Clock
     
     // I2C Output to DAC (Phase Injector)
     output wire ja_scl,         
@@ -26,6 +26,9 @@ module top_quantum_virtualizer (
     output wire jb_c6_out, // Cell 6 (Z-Axis Target)
     output wire jb_c7_out, // Cell 7 (Z-Axis Target)
     
+    // Ethernet PHY Keeper
+    output wire phy_rst_n,
+
     // FPGA Internal Thermal Sensors (XADC)
     input wire vauxp0,          
     input wire vauxn0           
@@ -37,6 +40,23 @@ module top_quantum_virtualizer (
     wire trigger_i2c;                 
     wire phase_field_active;
     wire master_entanglement_bus;     // The 1-to-7 Fan-Out Node
+    wire system_clk;                  // Stabilized System Clock
+
+    // --- STABILITY CONTROLLER: Pulsed Duty Cycle ---
+    // We only enable the asynchronous loops for a brief window every cycle.
+    // This prevents thermal runaway and keeps the AXI bus quiet.
+    reg [15:0] pulse_counter = 0;
+    wire silicon_pulse;
+    always @(posedge system_clk) pulse_counter <= pulse_counter + 1;
+    assign silicon_pulse = (pulse_counter < 16'h00FF); // 0.4% Duty Cycle
+
+    // 0. The Zynq-7000 Processing System Bridge (UNISIM Primitive)
+    // Even if we don't use its clocks, its presence stabilizes the AXI bus.
+    PS7 zynq_ps (
+        .MAXIGP0ACLK(CLK100MHZ)
+    );
+
+    assign system_clk = CLK100MHZ;
 
     // 1. Internal Observer: Digilent XADC Core
     // Reads the ambient temperature / thermal noise of the routing matrix
@@ -47,7 +67,7 @@ module top_quantum_virtualizer (
         .dwe_in(1'b0), 
         .do_out(xadc_temp_data_full),      
         .drdy_out(trigger_i2c),       
-        .dclk_in(CLK100MHZ), 
+        .dclk_in(system_clk), 
         .vp_in(1'b0), 
         .vn_in(1'b0),
         .vauxp0(vauxp0),              
@@ -63,7 +83,7 @@ module top_quantum_virtualizer (
     
     // 3. The DAC Phase Tuner (\Phi_{ST} Injector)
     dac_i2c_injector phase_tuner (
-        .clk(CLK100MHZ),
+        .clk(system_clk),
         .trigger_injection(trigger_i2c),
         .psi_sc(calculated_psi_sc),
         .i2c_scl(ja_scl),
@@ -71,7 +91,8 @@ module top_quantum_virtualizer (
     );
 
     // 4. Phase Field Activation Logic
-    assign phase_field_active = (xadc_temp_data > 12'h800) ? 1'b1 : 1'b0;
+    // Now Gated by Silicon Pulse to prevent thermal runaway.
+    assign phase_field_active = (xadc_temp_data > 12'h800) ? silicon_pulse : 1'b0;
 
     // 5. The 8-Cell 3D Macro-Cube & Topological Bus
     // Cell 0 acts as the "Anchor" that seeds the master entanglement bus.
@@ -98,10 +119,13 @@ module top_quantum_virtualizer (
     assign s_core_in = {12'b0, xadc_temp_data};
 
     sphy_core engine (
-        .clk(CLK100MHZ),
+        .clk(system_clk),
         .rst_n(1'b1),
         .in_flux(s_core_in),
         .out(s_core_out)
     );
+
+    // Keep Ethernet PHY active
+    assign phy_rst_n = 1'b1;
 
 endmodule
