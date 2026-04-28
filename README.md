@@ -19,10 +19,7 @@ Mabel has been refactored into a singular, high-performance proof-of-work. The e
 - **Toolchain:** Xilinx Vivado 2025.2
 
 ## ⚖️ License
-This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**. 
-- **Attribution:** You must give appropriate credit to the SomaOS project.
-- **Non-Commercial:** You may not use the material for commercial purposes.
-- **ShareAlike:** If you remix, transform, or build upon the material, you must distribute your contributions under the same license.
+This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software with zero restrictions.
 
 ---
 *Mabel is now SomaOS. Silicon is the new Sovereign.*
